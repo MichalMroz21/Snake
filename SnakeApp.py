@@ -100,7 +100,7 @@ class MainMenu:
             player.updatePosition(newPosition[0], newPosition[1])
             player.updatePause()
 
-            if player.addToPreviousPositions(newPositionHead[0], newPositionHead[1]) and (not player.checkIfInRange()):
+            if player.addToPreviousPositions(newPositionHead[0], newPositionHead[1]):
                 for i in player.previousPositions:
                     pygame.draw.rect(self.SCREEN, gameBackgroundColor, pygame.Rect(i[0], i[1], player.headThickness, player.headThickness))
                 
@@ -115,9 +115,26 @@ class MainMenu:
             keys = pygame.key.get_pressed() 
 
             if keys[ord('a')]: 
-                player.alpha -= 3
-            if keys[ord('d')]: 
-                player.alpha += 3
+
+                player.alpha -= player.alphaChange
+                player.alphaHead -= player.alphaChange
+
+                if player.alphaDistancedLeft == False:
+                    player.alphaHead -= player.alphaChange * 2
+                    player.alphaDistancedLeft = True
+
+            elif keys[ord('d')]: 
+
+                player.alpha += player.alphaChange
+                player.alphaHead += player.alphaChange
+
+                if player.alphaDistancedRight == False:
+                    player.alphaHead += player.alphaChange * 2 
+                    player.alphaDistancedRight = True
+            else:
+                player.alphaHead = player.alpha
+                player.alphaDistancedRight = False
+                player.alphaDistancedLeft = False
 
             for event in pygame.event.get():
 

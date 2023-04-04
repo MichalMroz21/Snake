@@ -6,16 +6,25 @@ class Player:
     def __init__(self):
 
         self.thickness = 5
-        self.headThickness = (5 * self.thickness)/6
+        self.headThickness = 5
+
         self.pos_x = rand.randint(1, 1280 - self.thickness)
         self.pos_y = rand.randint(1, 720 - self.thickness)
+
         self.pause = 0
+
         self.range = 20
         self.rangeMax = 180
+
         self.alpha = 90
+        self.alphaChange = 3
+        self.alphaDistancedLeft = False
+        self.alphaDistancedRight = False
+        self.alphaHead = self.alpha
+
         self.speed = 2
         self.color = "Red"
-        self.headColor = "Green"
+        self.headColor = "Red"
         self.previousPositions = []
 
 
@@ -27,13 +36,13 @@ class Player:
         newPosition.append(self.pos_y + self.speed * math.sin(math.radians(self.alpha)))
 
         return newPosition
-
+    
     def calcNewHeadPosition(self):
 
         newPosition = []
 
-        newPosition.append(self.pos_x + self.headThickness * self.speed * math.cos(math.radians(self.alpha)))
-        newPosition.append(self.pos_y + self.headThickness * self.speed * math.sin(math.radians(self.alpha)))
+        newPosition.append(self.pos_x + self.headThickness * self.speed * math.cos(math.radians(self.alphaHead)))
+        newPosition.append(self.pos_y + self.headThickness * self.speed * math.sin(math.radians(self.alphaHead)))
 
         return newPosition
 
@@ -55,6 +64,8 @@ class Player:
             return False
 
     def addToPreviousPositions(self, pos_x, pos_y):
+        if self.checkIfInRange(): return False
+
         if len(self.previousPositions) == 1: return True
 
         self.previousPositions.append([pos_x, pos_y])
