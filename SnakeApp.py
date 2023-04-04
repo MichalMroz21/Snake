@@ -1,6 +1,7 @@
 import pygame, sys
 from Button import Button
 from Player import Player
+from Mixer import Mixer
 import time 
 import math
 
@@ -84,6 +85,9 @@ class MainMenu:
     def play(self):
 
         player = Player()
+        myMixer = Mixer()
+        myMixer.setMusicVolume(0.5)
+        myMixer.switchMusicAndPlay()
         lastFrameTime = time.time()
         gameBackgroundColor = "black" 
 
@@ -141,6 +145,9 @@ class MainMenu:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                if event.type == myMixer.SONG_END:
+                    myMixer.switchMusicAndPlay()
                         
 
             pygame.display.update()
