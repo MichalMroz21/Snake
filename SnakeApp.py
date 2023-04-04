@@ -100,11 +100,12 @@ class MainMenu:
             player.updatePosition(newPosition[0], newPosition[1])
             player.updatePause()
 
-            if player.addToPreviousPositions(newPositionHead[0], newPositionHead[1]):
+            if player.addToPreviousPositions(newPositionHead[0], newPositionHead[1]) and (not player.checkIfInRange()):
                 for i in player.previousPositions:
                     pygame.draw.rect(self.SCREEN, gameBackgroundColor, pygame.Rect(i[0], i[1], player.headThickness, player.headThickness))
                 
                 player.clearPreviousPositions()
+                player.addToPreviousPositions(newPositionHead[0], newPositionHead[1])
 
             pygame.draw.rect(self.SCREEN, player.headColor, pygame.Rect(newPositionHead[0], newPositionHead[1], player.headThickness, player.headThickness))
 

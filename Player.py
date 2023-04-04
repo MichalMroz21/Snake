@@ -6,14 +6,14 @@ class Player:
     def __init__(self):
 
         self.thickness = 5
-        self.headThickness = (5 * self.thickness)/6 
+        self.headThickness = (5 * self.thickness)/6
         self.pos_x = rand.randint(1, 1280 - self.thickness)
         self.pos_y = rand.randint(1, 720 - self.thickness)
         self.pause = 0
         self.range = 20
         self.rangeMax = 180
         self.alpha = 90
-        self.speed = 1
+        self.speed = 2
         self.color = "Red"
         self.headColor = "Green"
         self.previousPositions = []
@@ -32,8 +32,8 @@ class Player:
 
         newPosition = []
 
-        newPosition.append(self.pos_x + self.thickness * self.speed * math.cos(math.radians(self.alpha)))
-        newPosition.append(self.pos_y + self.thickness * self.speed * math.sin(math.radians(self.alpha)))
+        newPosition.append(self.pos_x + self.headThickness * self.speed * math.cos(math.radians(self.alpha)))
+        newPosition.append(self.pos_y + self.headThickness * self.speed * math.sin(math.radians(self.alpha)))
 
         return newPosition
 
@@ -48,12 +48,18 @@ class Player:
         if self.pause >= self.rangeMax: self.pause = 0
 
     def checkIfInRange(self):
-        return self.pause not in range(self.rangeMax - self.range, self.rangeMax)
+        if self.pause not in range(self.rangeMax - self.range, self.rangeMax): 
+            self.clearPreviousPositions()
+            return True
+        else: 
+            return False
 
     def addToPreviousPositions(self, pos_x, pos_y):
-        self.previousPositions.append([pos_x, pos_y])
+        if len(self.previousPositions) == 1: return True
 
-        return len(self.previousPositions) == self.thickness
+        self.previousPositions.append([pos_x, pos_y])
+        return False
+
 
     def clearPreviousPositions(self):
 
