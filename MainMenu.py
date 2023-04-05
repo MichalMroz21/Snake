@@ -35,7 +35,7 @@ class MainMenu:
 
     def get_font(self, size): 
         return pygame.font.Font("assets/font/Lato-Regular.ttf", size)
-
+    d
 
     def options(self):
 
