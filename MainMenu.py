@@ -15,7 +15,7 @@ class MainMenu:
         self.game = Game(self.SCREEN)
 
         pygame.display.set_caption("Snake Game")
-        self.BG = pygame.image.load("assets/MenuBackground.jpg")
+        self.BG = pygame.image.load("assets/picture/MenuBackground.jpg")
 
         self.MENU_TEXT = self.get_font(100).render("Snake Game", True, "Yellow")
         self.MENU_RECT = self.MENU_TEXT.get_rect(center=(640, 100))
@@ -33,14 +33,14 @@ class MainMenu:
 
 
 
-
     def get_font(self, size): 
-        return pygame.font.Font("assets/Lato-Regular.ttf", size)
-
+        return pygame.font.Font("assets/font/Lato-Regular.ttf", size)
 
 
     def options(self):
+
         while True:
+
             self.SCREEN.blit(self.BG, (0, 0))
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
        

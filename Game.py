@@ -1,4 +1,3 @@
-from Button import Button
 from Player import Player
 from Mixer import Mixer
 import pygame
@@ -47,7 +46,7 @@ class Game:
             self.player.movePlayerOnScreen(self.SCREEN, self.gameBackgroundColor)
 
             input = pygame.key.get_pressed() 
-            self.player.useInputForPlayer(input)
+            self.player.handleInputForPlayer(input)
 
             self.dealWithEvents()
                         
