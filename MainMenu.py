@@ -10,9 +10,14 @@ class MainMenu:
     def __init__(self):
 
         pygame.init()
-        self.SCREEN = pygame.display.set_mode((1280, 720))
 
-        self.game = Game(self.SCREEN)
+        self.SCREEN_WIDTH = 1280
+        self.SCREEN_HEIGHT = 720
+        self.gameVolume = 0.5
+
+        self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+
+        self.game = Game(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameVolume)
 
         pygame.display.set_caption("Snake Game")
         self.BG = pygame.image.load("assets/picture/MenuBackground.jpg")
@@ -35,7 +40,6 @@ class MainMenu:
 
     def get_font(self, size): 
         return pygame.font.Font("assets/font/Lato-Regular.ttf", size)
-    d
 
     def options(self):
 

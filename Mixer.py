@@ -4,15 +4,19 @@ import random
 
 class Mixer:
 
-    def __init__(self):
+    def __init__(self, gameVolume):
 
         mixer.init()
+
         self.musicPlaylist = ["assets/sound/ES_Disco Craze - Rymdklang Soundtracks.mp3",
                               "assets/sound/ES_Doozy - _91nova.mp3",
                                "assets/sound/ES_Leaving Lunar - Sum Wave.mp3",
                                "assets/sound/ES_MANNERS (Instrumental Version) - Zorro.mp3",
                                "assets/sound/ES_Twenty Five - Dylan Sitts.mp3"]
         self.soundEffects = []
+
+        self.volume = gameVolume
+        self.setMusicVolume(self.volume)
 
         self.SONG_END = pygame.USEREVENT
         mixer.music.set_endevent(self.SONG_END)

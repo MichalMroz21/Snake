@@ -7,15 +7,16 @@ import math
 
 class Game:
 
-    def __init__(self, SCREEN):
+    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameVolume):
 
         self.SCREEN = SCREEN
         self.MENU_MOUSE_POS = pygame.mouse.get_pos()
         self.gameBackgroundColor = "black" 
-        self.gameVolume = 0.5
-        self.player = Player()
-        self.gameMixer = Mixer()
+        self.gameVolume = gameVolume
+        self.player = Player("Red", SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.gameMixer = Mixer(self.gameVolume)
 
+        self.fillBoard = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)] 
 
     def dealWithEvents(self):
         for event in pygame.event.get():
@@ -43,7 +44,7 @@ class Game:
             
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-            self.player.movePlayerOnScreen(self.SCREEN, self.gameBackgroundColor)
+            self.player.movePlayerOnScreen(self.SCREEN, self.gameBackgroundColor, self.fillBoard)
 
             input = pygame.key.get_pressed() 
             self.player.handleInputForPlayer(input)
