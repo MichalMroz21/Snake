@@ -21,10 +21,10 @@ class Player:
         self.rangeMax = 200
 
         self.alpha = rand.randint(1, 4) * 90
-        self.alphaChange = 3
-        self.steerStrength = 5
+        self.alphaChange = 4
+        self.steerStrength = 1
 
-        self.speed = 2
+        self.speed = 3
         self.color = color
         self.previousPosition = []
 
@@ -45,8 +45,8 @@ class Player:
 
         newPosition = []
 
-        newPosition.append(self.pos_x +  self.speed * math.cos(math.radians(self.alpha)))
-        newPosition.append(self.pos_y +  self.speed * math.sin(math.radians(self.alpha)))
+        newPosition.append(self.pos_x +  self.speed * self.steerStrength * math.cos(math.radians(self.alpha)))
+        newPosition.append(self.pos_y +  self.speed * self.steerStrength * math.sin(math.radians(self.alpha)))
 
         return newPosition
 

@@ -31,7 +31,6 @@ class Game:
 
     def play(self):
 
-        self.gameMixer.setMusicVolume(self.gameVolume)
         self.gameMixer.switchMusicAndPlay()
 
         self.SCREEN.fill(self.gameBackgroundColor)
