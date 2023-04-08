@@ -7,18 +7,26 @@ import math
 
 class Game:
 
-    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameVolume):
+    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameVolume, FPS):
 
         self.SCREEN = SCREEN
-        self.MENU_MOUSE_POS = pygame.mouse.get_pos()
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.gameBackgroundColor = "black" 
+        self.MENU_MOUSE_POS = pygame.mouse.get_pos()
+        self.FPS = FPS
+
         self.gameVolume = gameVolume
-        self.player = Player("Red", SCREEN_WIDTH, SCREEN_HEIGHT)
         self.gameMixer = Mixer(self.gameVolume)
 
-        self.fillBoard = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)] 
+        self.players = []
 
-    def dealWithEvents(self):
+        self.players.append(Player("Red", SCREEN_WIDTH, SCREEN_HEIGHT, 'a', 'd'))
+        self.players.append(Player("Blue", SCREEN_WIDTH, SCREEN_HEIGHT, 'g', 'j'))
+
+        self.fillBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
+
+    def dealWithGameEvents(self):
         for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -43,12 +51,15 @@ class Game:
             
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-            self.player.movePlayerOnScreen(self.SCREEN, self.gameBackgroundColor, self.fillBoard)
+            for i in self.players:
+                i.movePlayerOnScreen(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameBackgroundColor, self.fillBoard)
 
             input = pygame.key.get_pressed() 
-            self.player.handleInputForPlayer(input)
 
-            self.dealWithEvents()
+            for i in self.players:
+                i.handleInputForPlayer(input)
+
+            self.dealWithGameEvents()
                         
             pygame.display.update()
-            clock.tick(60)
+            clock.tick(self.FPS)

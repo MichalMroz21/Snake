@@ -14,10 +14,11 @@ class MainMenu:
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
         self.gameVolume = 0.5
+        self.FPS = 60
 
         self.SCREEN = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
-        self.game = Game(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameVolume)
+        self.game = Game(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameVolume, self.FPS)
 
         pygame.display.set_caption("Snake Game")
         self.BG = pygame.image.load("assets/picture/MenuBackground.jpg")

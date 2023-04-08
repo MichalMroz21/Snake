@@ -1,36 +1,52 @@
 import random as rand
 import math
 import pygame
-    
+
+from collections import deque    
+
 class Player:
 
-    def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT):
+    def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right):
 
-        self.thickness = 5
+        self.thickness = 20 #max 20, small optimization problems for more, collision problems for more, default: 5
         self.spawnMargin = 200
 
         self.pos_x = rand.randint(1 + self.spawnMargin, SCREEN_WIDTH - self.thickness - self.spawnMargin)
-        self.pos_y = rand.randint(1 + self.spawnMargin, SCREEN_HEIGHT - self.thickness - self.spawnMargin)
+        self.pos_y = rand.randint(1 + self.spawnMargin, SCREEN_HEIGHT - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
 
         self.firstSquareClear = True
         self.saveFirstRectangle = []
 
         self.pause = 0
 
-        self.range = 20
+        self.range = 15 + round(math.sqrt(2) * self.thickness)
         self.rangeMax = 200
 
         self.alpha = rand.randint(1, 4) * 90
-        self.alphaChange = 4
-        self.steerStrength = 1
+        self.alphaChange = 3 #should work for 90, default: 3, max 90 test for others
+        self.steerStrength = 1 #this is prob not needed, so can be left at 1
 
-        self.speed = 3
+        self.speed = 3 #default: 1.75 no max test for speed
         self.color = color
         self.previousPosition = []
 
-        self.isAlive = True 
-        self.previousHeadPositions = [[(-1, -1) for x in range(self.thickness)] for y in range(self.thickness)]
+        self.left = left;
+        self.right = right;
 
+        self.isAlive = True 
+
+        self.previousHeadPositionsMaxSize = 0
+        self.updatePreviousHeadPositionsMaxSize()
+
+        self.previousHeadPositionsMap = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)] 
+        self.previousHeadPositions = deque()
+
+
+    def updatePreviousHeadPositionsMaxSize(self):
+
+        alpha = self.alphaChange % 90 if self.alphaChange != 90 else 90
+
+        self.previousHeadPositionsMaxSize = self.thickness * math.sqrt(2) * math.cos(math.radians(alpha)) + 1 #how many rectangles to consider as previous in collision
 
     def calcNewPosition(self):
 
@@ -45,8 +61,8 @@ class Player:
 
         newPosition = []
 
-        newPosition.append(self.pos_x +  self.speed * self.steerStrength * math.cos(math.radians(self.alpha)))
-        newPosition.append(self.pos_y +  self.speed * self.steerStrength * math.sin(math.radians(self.alpha)))
+        newPosition.append(self.pos_x + self.speed * self.steerStrength * math.cos(math.radians(self.alpha)))
+        newPosition.append(self.pos_y + self.speed * self.steerStrength * math.sin(math.radians(self.alpha)))
 
         return newPosition
 
@@ -73,7 +89,6 @@ class Player:
         self.previousPosition = [pos_x, pos_y, alpha]
         return False
 
-
     def clearPreviousPosition(self):
         self.previousPosition.clear()
 
@@ -84,10 +99,10 @@ class Player:
 
         if self.isAlive:
 
-            if input[ord('a')]: 
+            if input[ord(self.left)]: 
                 self.alpha -= self.alphaChange
 
-            elif input[ord('d')]: 
+            elif input[ord(self.right)]: 
                 self.alpha += self.alphaChange
        
 
@@ -105,7 +120,33 @@ class Player:
         else: return True
 
 
-    def movePlayerOnScreen(self, SCREEN, gameBackgroundColor, boardFill):
+    def managePreviousHeadPositions(self, newPositionHead):
+
+        self.updatePreviousHeadPositionsMaxSize()
+
+        tempHeadPositions = [[-1 for x in range(self.thickness)] for y in range(self.thickness)] 
+
+        while(len(self.previousHeadPositions) >= self.previousHeadPositionsMaxSize):
+
+            removedPreviousRectangle = self.previousHeadPositions.popleft()
+
+            for i in removedPreviousRectangle:
+                for j in i:
+                    self.previousHeadPositionsMap[j[0]][j[1]] = 0
+
+        for a in range(0, self.thickness):
+                for b in range(0, self.thickness):
+
+                    x = (int)(newPositionHead[0]) + a
+                    y = (int)(newPositionHead[1]) + b
+
+                    tempHeadPositions[b][a] = (y, x)
+                    self.previousHeadPositionsMap[y][x] = 1
+
+        self.previousHeadPositions.append(tempHeadPositions)
+
+
+    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameBackgroundColor, boardFill):
 
         if self.isAlive:
 
@@ -118,9 +159,13 @@ class Player:
             if self.addToPreviousPosition(newPositionHead[0], newPositionHead[1], self.alpha):
           
                 for a in range(0, self.thickness):
-                    for b in range(0, self.thickness):                           
-                        pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(self.previousPosition[0] + a,  self.previousPosition[1] + b, 1, 1))
-                        boardFill[(int)(self.previousPosition[1]) + b][(int)(self.previousPosition[0]) + a] = 0
+                    for b in range(0, self.thickness):
+                        
+                        y = self.previousPosition[1] + b
+                        x = self.previousPosition[0] + a
+
+                        pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+                        boardFill[(int)(y)][(int)(x)] = 0
 
 
                 if self.firstSquareClear == True:
@@ -135,29 +180,35 @@ class Player:
                 for a in range(0, self.thickness):
                         for b in range(0, self.thickness):
 
-                            if self.checkIfPointIsInArea([self.saveFirstRectangle[0] + a, self.saveFirstRectangle[1] + b], self.saveFirstRectangle):
-                                pygame.draw.rect(SCREEN, self.color, pygame.Rect(self.saveFirstRectangle[0] + a,  self.saveFirstRectangle[1] + b, 1, 1))
-                                boardFill[(int)(self.saveFirstRectangle[1]) + b][(int)(self.saveFirstRectangle[0]) + a] = 1
+                            y = self.saveFirstRectangle[1] + b
+                            x = self.saveFirstRectangle[0] + a
+
+                            if self.checkIfPointIsInArea([x, y], self.saveFirstRectangle):
+
+                                pygame.draw.rect(SCREEN, self.color, pygame.Rect(x, y, 1, 1))
+                                boardFill[(int)(y)][(int)(x)] = 1
 
             if not self.checkIfCreatingPass():    
                 self.clearSaveFirstRectangle()
 
             pygame.draw.rect(SCREEN, self.color, pygame.Rect(newPositionHead[0], newPositionHead[1], self.thickness, self.thickness))
+
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
-                    if boardFill[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] == 1 and not any( ((int)(newPositionHead[1]) + b, (int)(newPositionHead[0] + a)) in sublist for sublist in self.previousHeadPositions):
+
+                    y = (int)(newPositionHead[1]) + b
+                    x = (int)(newPositionHead[0]) + a
+
+                    if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
                         self.isAlive = False
                         print("death")
                         return
-                   
-                   
+                                     
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
                     boardFill[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = 1
 
-            for a in range(0, self.thickness):
-                for b in range(0, self.thickness):
-                    self.previousHeadPositions[b][a] = ((int)(newPositionHead[1]) + b, (int)(newPositionHead[0]) + a)
+            self.managePreviousHeadPositions(newPositionHead)
        
         
         
