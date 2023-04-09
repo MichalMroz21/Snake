@@ -2,13 +2,14 @@ import random as rand
 import math
 import pygame
 
-from collections import deque    
+from collections import deque 
+
 
 class Player:
 
     def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right):
 
-        self.thickness = 20 #max 20, small optimization problems for more, collision problems for more, default: 5
+        self.thickness = 5 #max 20, small optimization problems for more, collision problems for more, default: 5
         self.spawnMargin = 200
 
         self.pos_x = rand.randint(1 + self.spawnMargin, SCREEN_WIDTH - self.thickness - self.spawnMargin)
@@ -26,7 +27,7 @@ class Player:
         self.alphaChange = 3 #should work for 90, default: 3, max 90 test for others
         self.steerStrength = 1 #this is prob not needed, so can be left at 1
 
-        self.speed = 3 #default: 1.75 no max test for speed
+        self.speed = 1.75 #default: 1.75 no max test for speed
         self.color = color
         self.previousPosition = []
 
@@ -146,7 +147,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameBackgroundColor, boardFill):
+    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameBackgroundColor, boardFill, mixer):
 
         if self.isAlive:
 
@@ -200,8 +201,9 @@ class Player:
                     x = (int)(newPositionHead[0]) + a
 
                     if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
+
                         self.isAlive = False
-                        print("death")
+                        mixer.playSoundEffect(mixer.SoundBoard.death)
                         return
                                      
             for a in range(0, self.thickness):

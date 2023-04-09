@@ -52,7 +52,7 @@ class Game:
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
             for i in self.players:
-                i.movePlayerOnScreen(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameBackgroundColor, self.fillBoard)
+                i.movePlayerOnScreen(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameBackgroundColor, self.fillBoard, self.gameMixer)
 
             input = pygame.key.get_pressed() 
 
