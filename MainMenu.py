@@ -4,6 +4,7 @@ import pygame
 import pygame, sys
 import time 
 import math
+import asyncio
 
 class MainMenu:
 
@@ -89,7 +90,7 @@ class MainMenu:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.PLAY_BUTTON.checkForInput(self.MENU_MOUSE_POS):
-                        self.game.play()
+                        asyncio.run(self.game.play())
 
                     if self.OPTIONS_BUTTON.checkForInput(self.MENU_MOUSE_POS):
                         self.options()

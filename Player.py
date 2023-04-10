@@ -2,18 +2,26 @@ import random as rand
 import math
 import pygame
 
+from threading import Thread
 from collections import deque 
-
+from Mixer import Mixer
+from PlayerAnimator import PlayerAnimator
 
 class Player:
 
-    def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right):
-
+    def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right, gameBackgroundColor, SCREEN, FPS):
+        
         self.thickness = 5 #max 20, small optimization problems for more, collision problems for more, default: 5
         self.spawnMargin = 200
 
-        self.pos_x = rand.randint(1 + self.spawnMargin, SCREEN_WIDTH - self.thickness - self.spawnMargin)
-        self.pos_y = rand.randint(1 + self.spawnMargin, SCREEN_HEIGHT - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.SCREEN = SCREEN
+
+        self.FPS = FPS
+
+        self.pos_x = rand.randint(1 + self.spawnMargin, self.SCREEN_WIDTH - self.thickness - self.spawnMargin)
+        self.pos_y = rand.randint(1 + self.spawnMargin, self.SCREEN_HEIGHT - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
 
         self.firstSquareClear = True
         self.saveFirstRectangle = []
@@ -29,6 +37,7 @@ class Player:
 
         self.speed = 1.75 #default: 1.75 no max test for speed
         self.color = color
+        self.gameBackgroundColor = gameBackgroundColor
         self.previousPosition = []
 
         self.left = left;
@@ -42,6 +51,10 @@ class Player:
         self.previousHeadPositionsMap = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)] 
         self.previousHeadPositions = deque()
 
+        self.playerVolume = 0.5
+        self.mixer = Mixer(self.playerVolume)
+        self.animator = PlayerAnimator(self, 5)
+        
 
     def updatePreviousHeadPositionsMaxSize(self):
 
@@ -105,7 +118,13 @@ class Player:
 
             elif input[ord(self.right)]: 
                 self.alpha += self.alphaChange
-       
+
+    def death(self, boardFill):
+
+        self.isAlive = False
+        self.mixer.playSoundEffect(self.mixer.SoundBoard.death)
+
+        self.animator.animateDeath(boardFill)
 
     def checkIfPointIsInArea(self, point, squarePoint):
 
@@ -147,7 +166,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameBackgroundColor, boardFill, mixer):
+    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill):
 
         if self.isAlive:
 
@@ -165,7 +184,7 @@ class Player:
                         y = self.previousPosition[1] + b
                         x = self.previousPosition[0] + a
 
-                        pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+                        pygame.draw.rect(SCREEN, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
                         boardFill[(int)(y)][(int)(x)] = 0
 
 
@@ -202,8 +221,7 @@ class Player:
 
                     if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
-                        self.isAlive = False
-                        mixer.playSoundEffect(mixer.SoundBoard.death)
+                        self.death(boardFill)
                         return
                                      
             for a in range(0, self.thickness):

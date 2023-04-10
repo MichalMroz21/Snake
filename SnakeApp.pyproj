@@ -21,9 +21,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Animator.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Button.py">
       <SubType>Code</SubType>
     </Compile>
@@ -37,6 +34,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Player.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PlayerAnimator.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SnakeApp.py" />

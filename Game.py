@@ -4,6 +4,7 @@ import pygame
 import pygame, sys
 import time 
 import math
+from threading import Thread
 
 class Game:
 
@@ -21,8 +22,8 @@ class Game:
 
         self.players = []
 
-        self.players.append(Player("Red", SCREEN_WIDTH, SCREEN_HEIGHT, 'a', 'd'))
-        self.players.append(Player("Blue", SCREEN_WIDTH, SCREEN_HEIGHT, 'g', 'j'))
+        self.players.append(Player("Red", self.SCREEN_WIDTH, self.SCREEN_HEIGHT, 'a', 'd', self.gameBackgroundColor, self.SCREEN, self.FPS))
+        self.players.append(Player("Blue", self.SCREEN_WIDTH, self.SCREEN_HEIGHT, 'g', 'j', self.gameBackgroundColor, self.SCREEN, self.FPS))
 
         self.fillBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
 
@@ -43,16 +44,19 @@ class Game:
 
         self.SCREEN.fill(self.gameBackgroundColor)
 
-        lastFrameTime = time.time()
         clock = pygame.time.Clock() 
         
-
         while True:
             
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
+            moveThreads = []
+
             for i in self.players:
-                i.movePlayerOnScreen(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.gameBackgroundColor, self.fillBoard, self.gameMixer)
+                moveThreads.append(Thread(target = i.movePlayerOnScreen(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard)))
+                moveThreads[len(moveThreads) - 1].start()
+
+           
 
             input = pygame.key.get_pressed() 
 
