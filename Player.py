@@ -11,7 +11,7 @@ class Player:
 
     def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right, gameBackgroundColor, SCREEN, FPS):
         
-        self.thickness = 15 #max 20, small optimization problems for more, collision problems for more, default: 5
+        self.thickness = 5 #max 20, small optimization problems for more, collision problems for more, default: 5
         self.spawnMargin = 200
 
         self.SCREEN_WIDTH = SCREEN_WIDTH

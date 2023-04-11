@@ -40,7 +40,7 @@ class PlayerAnimator():
         for i in range(0, particlesAmount):
 
             particlesAlphas.append(rand.randint(0, 360))
-            particlesSizes.append(rand.randint((int)(thickness / 3), thickness / 1.5))
+            particlesSizes.append(rand.randint((int)(thickness / 3), (int)(thickness / 1.5)))
             particlesTransparency.append(rand.randint((int)(maxTransparency / 2), maxTransparency))
             particlesMaxRadiuses.append(rand.randint((int)(baseRadius), (int)(baseRadius * 1.75)))
             particlesVelocities.append(rand.randint((int)(playerSpeed/2), (int)(playerSpeed * 1.5)))
