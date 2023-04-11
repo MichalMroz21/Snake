@@ -11,7 +11,7 @@ class Player:
 
     def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right, gameBackgroundColor, SCREEN, FPS):
         
-        self.thickness = 5 #max 20, small optimization problems for more, collision problems for more, default: 5
+        self.thickness = 15 #max 20, small optimization problems for more, collision problems for more, default: 5
         self.spawnMargin = 200
 
         self.SCREEN_WIDTH = SCREEN_WIDTH
@@ -53,7 +53,7 @@ class Player:
 
         self.playerVolume = 0.5
         self.mixer = Mixer(self.playerVolume)
-        self.animator = PlayerAnimator(self, 5)
+        self.animator = PlayerAnimator(self)
         
 
     def updatePreviousHeadPositionsMaxSize(self):
@@ -119,12 +119,11 @@ class Player:
             elif input[ord(self.right)]: 
                 self.alpha += self.alphaChange
 
-    def death(self, boardFill):
+    def death(self, boardFill, colorBoard):
 
-        self.isAlive = False
         self.mixer.playSoundEffect(self.mixer.SoundBoard.death)
 
-        self.animator.animateDeath(boardFill)
+        self.animator.animateDeath(boardFill, colorBoard)
 
     def checkIfPointIsInArea(self, point, squarePoint):
 
@@ -166,7 +165,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill):
+    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill, colorBoard):
 
         if self.isAlive:
 
@@ -186,6 +185,7 @@ class Player:
 
                         pygame.draw.rect(SCREEN, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
                         boardFill[(int)(y)][(int)(x)] = 0
+                        colorBoard[(int(y))][(int)(x)] = self.gameBackgroundColor
 
 
                 if self.firstSquareClear == True:
@@ -207,6 +207,8 @@ class Player:
 
                                 pygame.draw.rect(SCREEN, self.color, pygame.Rect(x, y, 1, 1))
                                 boardFill[(int)(y)][(int)(x)] = 1
+                                colorBoard[(int(y))][(int)(x)] = self.color
+
 
             if not self.checkIfCreatingPass():    
                 self.clearSaveFirstRectangle()
@@ -221,12 +223,15 @@ class Player:
 
                     if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
-                        self.death(boardFill)
+                        self.isAlive = False
+                        Thread(target = self.death, args = (boardFill, colorBoard)).start()
                         return
-                                     
+            
+            #this has to be below death check
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
                     boardFill[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = 1
+                    colorBoard[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = self.color
 
             self.managePreviousHeadPositions(newPositionHead)
        

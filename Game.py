@@ -26,6 +26,7 @@ class Game:
         self.players.append(Player("Blue", self.SCREEN_WIDTH, self.SCREEN_HEIGHT, 'g', 'j', self.gameBackgroundColor, self.SCREEN, self.FPS))
 
         self.fillBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
+        self.colorBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
 
     def dealWithGameEvents(self):
         for event in pygame.event.get():
@@ -52,11 +53,12 @@ class Game:
 
             moveThreads = []
 
-            for i in self.players:
-                moveThreads.append(Thread(target = i.movePlayerOnScreen(self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard)))
-                moveThreads[len(moveThreads) - 1].start()
+            for player in self.players:
+                moveThreads.append(Thread(target = player.movePlayerOnScreen, args = (self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard, self.colorBoard)))
+                moveThreads[-1].start()
 
-           
+            for moveThread in moveThreads:
+                moveThread.join()           
 
             input = pygame.key.get_pressed() 
 

@@ -6,64 +6,135 @@ from threading import Thread
 
 class PlayerAnimator():
 
-    def __init__(self, player, animationSpeed):
+    def __init__(self, player):
         
         self.player = player
-        self.globalAnimationSpeed = animationSpeed
 
 
-    def animateDeath(self, boardFill):
+    def animateDeath(self, boardFill, colorBoard):
         
-        radius = 1
-        previousRadius = 0
         circle_center = (self.player.pos_x, self.player.pos_y)
-        maxRadius = rand.randint(20, 30)
 
-        particlesAmount = rand.randint(5, 10)
+        SCREEN_WIDTH = self.player.SCREEN_WIDTH
+        SCREEN_HEIGHT = self.player.SCREEN_HEIGHT
+        SCREEN = self.player.SCREEN
+
+        playerColor = self.player.color
+        gameBackgroundColor = self.player.gameBackgroundColor
+        thickness = self.player.thickness
+
+        playerSpeed = self.player.speed
+        FPS = self.player.FPS
+
+        maxTransparency = 255
+
+        particlesAmount = rand.randint(8, 12)
         particlesAlphas = []
+        particlesSizes = []
+        particlesTransparency = []
+        particlesMaxRadiuses = []
+        particlesVelocities = []
+
+        baseRadius = (SCREEN_WIDTH + SCREEN_HEIGHT)/2 / thickness
 
         for i in range(0, particlesAmount):
+
             particlesAlphas.append(rand.randint(0, 360))
+            particlesSizes.append(rand.randint((int)(thickness / 3), thickness / 1.5))
+            particlesTransparency.append(rand.randint((int)(maxTransparency / 2), maxTransparency))
+            particlesMaxRadiuses.append(rand.randint((int)(baseRadius), (int)(baseRadius * 1.75)))
+            particlesVelocities.append(rand.randint((int)(playerSpeed/2), (int)(playerSpeed * 1.5)))
+
+        maxRadius = max(particlesMaxRadiuses)
+
+        previousRadiuses = [0 for radius in range(0, particlesAmount)]
+        particleRadiuses = [1 for particle in range(0, particlesAmount)]
+        finalClears = [False for particle in range(0, particlesAmount)]
 
         clock = pygame.time.Clock() 
 
-        while radius <= maxRadius:
+        while min(particleRadiuses) <= maxRadius:
+        
+            i = 0
+            for alpha, size, transparency in zip(particlesAlphas, particlesSizes, particlesTransparency):
 
-            for i in particlesAlphas:
+                if previousRadiuses[i] != 0 and finalClears[i] == False:
 
-                if previousRadius != 0:
+                    xPrev = previousRadiuses[i] * math.cos(math.radians(alpha)) + circle_center[0]
+                    yPrev = previousRadiuses[i] * math.sin(math.radians(alpha)) + circle_center[1]
 
-                    xPrev = previousRadius * math.cos(math.radians(i)) + circle_center[0]
-                    yPrev = previousRadius * math.sin(math.radians(i)) + circle_center[1]
+                    for a in range(0, size):
+                        for b in range(0, size):
+                        
+                            y = (int)(yPrev) + b
+                            x = (int)(xPrev) + a
 
-                    #if(boardFill[(int)(yPrev)][(int)(xPrev)] != 1):
-                    pygame.draw.rect(self.player.SCREEN, self.player.gameBackgroundColor, pygame.Rect(xPrev, yPrev, self.player.thickness, self.player.thickness))
+                            if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
+
+                            if(boardFill[y][x] != 1):
+
+                                pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+
+                            else:
+
+                                pygame.draw.rect(SCREEN, colorBoard[y][x], pygame.Rect(x, y, 1, 1))
 
 
-                x = radius * math.cos(math.radians(i)) + circle_center[0]
-                y = radius * math.sin(math.radians(i)) + circle_center[1]
+                if particleRadiuses[i] >= particlesMaxRadiuses[i]:
+                    finalClears[i] = True
+                    previousRadiuses[i] = particleRadiuses[i]
+                    i += 1
+                    continue
 
-                pygame.draw.rect(self.player.SCREEN, self.player.color, pygame.Rect(x, y, self.player.thickness, self.player.thickness))
+
+                xTop = particleRadiuses[i] * math.cos(math.radians(alpha)) + circle_center[0]
+                yTop = particleRadiuses[i] * math.sin(math.radians(alpha)) + circle_center[1]
+
+                for a in range(0, size):
+                        for b in range(0, size):
+                        
+                            y = (int)(yTop) + b
+                            x = (int)(xTop) + a
+
+                            if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
+
+                            s = pygame.Surface((1, 1))
+                            s.set_alpha(transparency)
+                            s.fill(playerColor)
+
+                            SCREEN.blit(s, (x, y))            
 
 
-            previousRadius = radius
-            radius += self.player.speed/10.0
+                previousRadiuses[i] = particleRadiuses[i]
+                particleRadiuses[i] += particlesVelocities[i]
+                i += 1
 
             pygame.display.update()
-            clock.tick(self.player.FPS)
+            clock.tick(FPS)
 
 
-        for i in particlesAlphas:
+        for alpha, size in zip(particlesAlphas, particlesSizes):
 
-            if previousRadius != 0:
+            if previousRadiuses[i] != 0:
 
-                xPrev = previousRadius * math.cos(math.radians(i)) + circle_center[0]
-                yPrev = previousRadius * math.sin(math.radians(i)) + circle_center[1]
+                xPrev = previousRadiuses[i] * math.cos(math.radians(alpha)) + circle_center[0]
+                yPrev = previousRadiuses[i] * math.sin(math.radians(alpha)) + circle_center[1]
 
-                #if(boardFill[(int)(yPrev)][(int)(xPrev)] != 1):
-                pygame.draw.rect(self.player.SCREEN, self.player.gameBackgroundColor, pygame.Rect(xPrev, yPrev, self.player.thickness, self.player.thickness))
+                for a in range(0, size):
+                    for b in range(0, size):
+                        
+                        y = (int)(yPrev) + b
+                        x = (int)(xPrev) + a
 
+                        if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
 
+                        if(boardFill[y][x] != 1):
+
+                            pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+
+                        else:
+
+                             pygame.draw.rect(SCREEN, colorBoard[y][x], pygame.Rect(x, y, 1, 1))
 
 
 
