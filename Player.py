@@ -184,6 +184,7 @@ class Player:
                         x = self.previousPosition[0] + a
 
                         pygame.draw.rect(SCREEN, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+
                         boardFill[(int)(y)][(int)(x)] = 0
                         colorBoard[(int(y))][(int)(x)] = self.gameBackgroundColor
 
@@ -206,6 +207,7 @@ class Player:
                             if self.checkIfPointIsInArea([x, y], self.saveFirstRectangle):
 
                                 pygame.draw.rect(SCREEN, self.color, pygame.Rect(x, y, 1, 1))
+
                                 boardFill[(int)(y)][(int)(x)] = 1
                                 colorBoard[(int(y))][(int)(x)] = self.color
 
@@ -230,6 +232,7 @@ class Player:
             #this has to be below death check
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
+
                     boardFill[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = 1
                     colorBoard[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = self.color
 

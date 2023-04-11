@@ -28,22 +28,26 @@ class PlayerAnimator():
 
         maxTransparency = 255
 
-        particlesAmount = rand.randint(8, 12)
+        particlesAmount = rand.randint(10, 15)
         particlesAlphas = []
         particlesSizes = []
         particlesTransparency = []
         particlesMaxRadiuses = []
         particlesVelocities = []
 
-        baseRadius = (SCREEN_WIDTH + SCREEN_HEIGHT)/2 / thickness
+        baseRadius = (SCREEN_WIDTH + SCREEN_HEIGHT)/2 / (thickness * 1.5)
+        previousAlpha = 0
 
         for i in range(0, particlesAmount):
 
-            particlesAlphas.append(rand.randint(0, 360))
-            particlesSizes.append(rand.randint((int)(thickness / 3), (int)(thickness / 1.5)))
-            particlesTransparency.append(rand.randint((int)(maxTransparency / 2), maxTransparency))
-            particlesMaxRadiuses.append(rand.randint((int)(baseRadius), (int)(baseRadius * 1.75)))
-            particlesVelocities.append(rand.randint((int)(playerSpeed/2), (int)(playerSpeed * 1.5)))
+            particlesAlphas.append(rand.randint(0 + (int)(previousAlpha/2), 360))
+            particlesSizes.append(rand.randint((int)(thickness / 2), (int)(thickness / 1.5)))
+
+            particlesTransparency.append(rand.uniform(maxTransparency / 2, maxTransparency))
+            particlesMaxRadiuses.append(rand.uniform(baseRadius, baseRadius * 1.75))
+            particlesVelocities.append(rand.uniform(playerSpeed/2, playerSpeed * 1.5))
+
+            previousAlpha = particlesAlphas[-1]
 
         maxRadius = max(particlesMaxRadiuses)
 
