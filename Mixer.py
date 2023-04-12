@@ -8,7 +8,7 @@ class Mixer:
     class SoundBoard(enum.Enum):
         death = 0
 
-    def __init__(self, gameVolume):
+    def __init__(self, initialVolume):
 
         mixer.init()
 
@@ -20,8 +20,11 @@ class Mixer:
 
         self.soundEffects = ["assets/sounds/417486__mentoslat__8-bit-death-sound.wav"]
 
-        self.volume = gameVolume
-        self.setMusicVolume(self.volume)
+        self.musicVolume = initialVolume
+        self.soundVolume = initialVolume
+
+        self.setMusicVolume(self.musicVolume)
+        self.setSoundVolume(self.soundVolume)
 
         self.SONG_END = pygame.USEREVENT
         mixer.music.set_endevent(self.SONG_END)
@@ -41,7 +44,8 @@ class Mixer:
 
     def playSoundEffect(self, soundEffect):
         sound = mixer.Sound(self.soundEffects[soundEffect.value])
-        sound.play(0)
+        sound.play()
+        sound.set_volume(self.soundVolume)
 
     def pauseMusic(self):
         mixer.music.pause()
@@ -50,5 +54,11 @@ class Mixer:
         mixer.music.unpause()
 
     def setMusicVolume(self, volume):
-        mixer.music.set_volume(volume)
+        self.musicVolume = volume
+        mixer.music.set_volume(self.musicVolume)
+
+    def setSoundVolume(self, volume):
+        self.soundVolume = volume
+
+        
 

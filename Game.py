@@ -1,5 +1,4 @@
 from Player import Player
-from Mixer import Mixer
 import pygame
 import pygame, sys
 import time 
@@ -8,7 +7,7 @@ from threading import Thread
 
 class Game:
 
-    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, gameVolume, FPS):
+    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, mixer):
 
         self.SCREEN = SCREEN
         self.SCREEN_WIDTH = SCREEN_WIDTH
@@ -17,8 +16,7 @@ class Game:
         self.MENU_MOUSE_POS = pygame.mouse.get_pos()
         self.FPS = FPS
 
-        self.gameVolume = gameVolume
-        self.gameMixer = Mixer(self.gameVolume)
+        self.gameMixer = mixer
 
         self.players = []
 
