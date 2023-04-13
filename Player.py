@@ -123,13 +123,13 @@ class Player:
 
         self.animator.animateDeath(boardFill, colorBoard)
 
-    def checkIfPointIsInArea(self, point, squarePoint):
+    def checkIfPoroundIsInArea(self, poround, squarePoround):
 
-        angle = squarePoint[2]
+        angle = squarePoround[2]
         angle = angle % 360
 
-        x = point[0]
-        y = point[1]
+        x = poround[0]
+        y = poround[1]
 
         o = math.degrees(math.atan2(y, x))
 
@@ -154,8 +154,8 @@ class Player:
         for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
 
-                    x = (int)(newPositionHead[0]) + a
-                    y = (int)(newPositionHead[1]) + b
+                    x = round(newPositionHead[0]) + a
+                    y = round(newPositionHead[1]) + b
 
                     tempHeadPositions[b][a] = (y, x)
                     self.previousHeadPositionsMap[y][x] = 1
@@ -183,8 +183,8 @@ class Player:
 
                         pygame.draw.rect(SCREEN, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
 
-                        boardFill[(int)(y)][(int)(x)] = 0
-                        colorBoard[(int(y))][(int)(x)] = self.gameBackgroundColor
+                        boardFill[round(y)][round(x)] = 0
+                        colorBoard[(round(y))][round(x)] = self.gameBackgroundColor
 
 
                 if self.firstSquareClear == True:
@@ -202,12 +202,12 @@ class Player:
                             y = self.saveFirstRectangle[1] + b
                             x = self.saveFirstRectangle[0] + a
 
-                            if self.checkIfPointIsInArea([x, y], self.saveFirstRectangle):
+                            if self.checkIfPoroundIsInArea([x, y], self.saveFirstRectangle):
 
                                 pygame.draw.rect(SCREEN, self.color, pygame.Rect(x, y, 1, 1))
 
-                                boardFill[(int)(y)][(int)(x)] = 1
-                                colorBoard[(int(y))][(int)(x)] = self.color
+                                boardFill[round(y)][round(x)] = 1
+                                colorBoard[(round(y))][round(x)] = self.color
 
 
             if not self.checkIfCreatingPass():    
@@ -218,8 +218,8 @@ class Player:
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
 
-                    y = (int)(newPositionHead[1]) + b
-                    x = (int)(newPositionHead[0]) + a
+                    y = round(newPositionHead[1]) + b
+                    x = round(newPositionHead[0]) + a
 
                     if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
@@ -232,8 +232,8 @@ class Player:
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
 
-                    boardFill[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = 1
-                    colorBoard[(int)(newPositionHead[1]) + b][(int)(newPositionHead[0]) + a] = self.color
+                    boardFill[round(newPositionHead[1]) + b][round(newPositionHead[0]) + a] = 1
+                    colorBoard[round(newPositionHead[1]) + b][round(newPositionHead[0]) + a] = self.color
 
             self.managePreviousHeadPositions(newPositionHead)
        

@@ -36,13 +36,13 @@ class PlayerAnimator():
         particlesMaxRadiuses = []
         particlesVelocities = []
 
-        baseRadius = (SCREEN_WIDTH + SCREEN_HEIGHT)/2 / (thickness * 1.5)
+        baseRadius = (SCREEN_WIDTH * SCREEN_HEIGHT)/2 / (thickness * 1.5) / (1280 * 720 / (1280 + 720))
         previousAlpha = 0
 
         for i in range(0, particlesAmount):
 
-            particlesAlphas.append(rand.randint(0 + (int)(previousAlpha/2), 360))
-            particlesSizes.append(rand.randint((int)(thickness / 2), (int)(thickness / 1.5)))
+            particlesAlphas.append(rand.randint(0 + round(previousAlpha/2), 360))
+            particlesSizes.append(rand.randint(round(thickness / 2), round(thickness / 1.5)))
 
             particlesTransparency.append(rand.uniform(maxTransparency / 2, maxTransparency))
             particlesMaxRadiuses.append(rand.uniform(baseRadius, baseRadius * 1.75))
@@ -71,8 +71,8 @@ class PlayerAnimator():
                     for a in range(0, size):
                         for b in range(0, size):
                         
-                            y = (int)(yPrev) + b
-                            x = (int)(xPrev) + a
+                            y = round(yPrev) + b
+                            x = round(xPrev) + a
 
                             if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
 
@@ -98,8 +98,8 @@ class PlayerAnimator():
                 for a in range(0, size):
                         for b in range(0, size):
                         
-                            y = (int)(yTop) + b
-                            x = (int)(xTop) + a
+                            y = round(yTop) + b
+                            x = round(xTop) + a
 
                             if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
 

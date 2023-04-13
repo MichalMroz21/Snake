@@ -121,12 +121,11 @@ class MainMenu:
 
         
     def get_font(self, size): 
-        return pygame.font.Font("assets/font/Lato-Regular.ttf", (int)(size))
+        return pygame.font.Font("assets/font/Lato-Regular.ttf", round(size))
 
 
     def setGameWindowCenter(self, x, y):
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
-        print(os.environ['SDL_VIDEO_WINDOW_POS'])
 
 
     def options(self):
@@ -134,6 +133,8 @@ class MainMenu:
         curWidth = self.SCREEN_WIDTH
         curHeight = self.SCREEN_HEIGHT
         curIndex = self.RESOLUTIONS_INDEX[str(self.SCREEN_WIDTH) + "x" + str(self.SCREEN_HEIGHT)]
+
+        initialIndex = curIndex
 
         while True:
 
@@ -167,6 +168,7 @@ class MainMenu:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.OPTIONS_BACK.checkForInput(self.MENU_MOUSE_POS):
+                        self.OPTIONS_RESOLUTION.changeText(self.RESOLUTIONS_MAP[initialIndex][0] + "x" + self.RESOLUTIONS_MAP[initialIndex][1])
                         self.displayMainMenu()
 
                     if self.OPTIONS_RESOLUTION.checkForInput(self.MENU_MOUSE_POS):
@@ -180,15 +182,13 @@ class MainMenu:
 
                     if self.OPTIONS_APPLY.checkForInput(self.MENU_MOUSE_POS):
 
-                        self.SCREEN_WIDTH = (int)(self.RESOLUTIONS_MAP[curIndex][0])
-                        self.SCREEN_HEIGHT = (int)(self.RESOLUTIONS_MAP[curIndex][1])
+                        self.SCREEN_WIDTH = int(self.RESOLUTIONS_MAP[curIndex][0])
+                        self.SCREEN_HEIGHT = int(self.RESOLUTIONS_MAP[curIndex][1])
                         self.resolution_init(firstTime = False)
 
                 if pygame.mouse.get_pressed()[0]:
                     self.OPTIONS_MUSIC_SLIDER.update(self.MENU_MOUSE_POS)
                     self.OPTIONS_SOUND_SLIDER.update(self.MENU_MOUSE_POS)
-
-                    print(self.OPTIONS_MUSIC_SLIDER.getValue())
 
                     self.mixer.setMusicVolume(self.OPTIONS_MUSIC_SLIDER.getValue())
                     self.mixer.setSoundVolume(self.OPTIONS_SOUND_SLIDER.getValue())
