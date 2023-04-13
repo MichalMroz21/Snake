@@ -51,8 +51,6 @@ class Player:
         self.previousHeadPositionsMap = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)] 
         self.previousHeadPositions = deque()
 
-        self.playerVolume = 0.5
-        self.mixer = Mixer(self.playerVolume)
         self.animator = PlayerAnimator(self)
         
 
@@ -119,9 +117,9 @@ class Player:
             elif input[ord(self.right)]: 
                 self.alpha += self.alphaChange
 
-    def death(self, boardFill, colorBoard):
+    def death(self, boardFill, colorBoard, mixer):
 
-        self.mixer.playSoundEffect(self.mixer.SoundBoard.death)
+        mixer.playSoundEffect(mixer.SoundBoard.death)
 
         self.animator.animateDeath(boardFill, colorBoard)
 
@@ -165,7 +163,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill, colorBoard, animateThread):
+    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill, colorBoard, animateThread, mixer):
 
         if self.isAlive:
 
@@ -226,12 +224,11 @@ class Player:
                     if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
                         self.isAlive = False
-                        deathThread = Thread(target = self.death, args = (boardFill, colorBoard))
+                        deathThread = Thread(target = self.death, args = (boardFill, colorBoard, mixer))
                         animateThread.append(deathThread)
                         deathThread.start()
                         return
             
-            #this has to be below death check
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
 

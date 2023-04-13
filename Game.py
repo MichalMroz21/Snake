@@ -56,7 +56,7 @@ class Game:
             moveThreads = []
 
             for player in self.players:
-                moveThreads.append(Thread(target = player.movePlayerOnScreen, args = (self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard, self.colorBoard, self.animateThreads)))
+                moveThreads.append(Thread(target = player.movePlayerOnScreen, args = (self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard, self.colorBoard, self.animateThreads, self.gameMixer)))
                 moveThreads[-1].start()
 
             for moveThread in moveThreads:
@@ -76,7 +76,11 @@ class Game:
                     if(animateThread.is_alive()): allAnimationDead = False
 
                 if(allAnimationDead == True): 
-                    self.menu.displayMainMenu()
+
+                    self.gameMixer.pauseMusic()
+                    self.gameMixer.selectRandomSong()
+
+                    self.menu.displayMainMenu(firstTime = True)
                     break       
 
             input = pygame.key.get_pressed() 

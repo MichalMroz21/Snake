@@ -12,6 +12,8 @@ class Mixer:
 
         mixer.init()
 
+        self.menuMusic = "assets/music/ES_Loopty Loops (Instrumental Version) - Pandaraps.mp3"
+
         self.musicPlaylist = ["assets/music/ES_Disco Craze - Rymdklang Soundtracks.mp3",
                               "assets/music/ES_Doozy - _91nova.mp3",
                                "assets/music/ES_Leaving Lunar - Sum Wave.mp3",
@@ -30,10 +32,11 @@ class Mixer:
         mixer.music.set_endevent(self.SONG_END)
 
         self.maxSongs = len(self.musicPlaylist)
-        self.currentSong = random.randint(-1, self.maxSongs - 2) 
+        self.currentSong = self.selectRandomSong()
 
         
     def switchMusicAndPlay(self):
+        self.unPauseMusic()
 
         self.currentSong = self.currentSong + 1
         if self.currentSong == self.maxSongs: self.currentSong = 0
@@ -42,7 +45,16 @@ class Mixer:
         mixer.music.play()
 
 
+    def selectRandomSong(self):
+        return random.randint(-1, self.maxSongs - 2) 
+
+    def playMenuMusic(self):
+
+        mixer.music.load(self.menuMusic)
+        mixer.music.play()
+
     def playSoundEffect(self, soundEffect):
+
         sound = mixer.Sound(self.soundEffects[soundEffect.value])
         sound.play()
         sound.set_volume(self.soundVolume)
