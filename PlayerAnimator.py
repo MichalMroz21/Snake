@@ -2,6 +2,7 @@ import pygame
 import time
 import random as rand
 import math
+import sys 
 from threading import Thread
 
 class PlayerAnimator():
@@ -57,7 +58,7 @@ class PlayerAnimator():
 
         clock = pygame.time.Clock() 
 
-        while min(particleRadiuses) <= maxRadius:
+        while False in finalClears:
         
             i = 0
             for alpha, size, transparency in zip(particlesAlphas, particlesSizes, particlesTransparency):
@@ -113,32 +114,9 @@ class PlayerAnimator():
                 particleRadiuses[i] += particlesVelocities[i]
                 i += 1
 
-            pygame.display.update()
+                pygame.display.update()
+
             clock.tick(FPS)
-
-
-        for alpha, size in zip(particlesAlphas, particlesSizes):
-
-            if previousRadiuses[i] != 0:
-
-                xPrev = previousRadiuses[i] * math.cos(math.radians(alpha)) + circle_center[0]
-                yPrev = previousRadiuses[i] * math.sin(math.radians(alpha)) + circle_center[1]
-
-                for a in range(0, size):
-                    for b in range(0, size):
-                        
-                        y = (int)(yPrev) + b
-                        x = (int)(xPrev) + a
-
-                        if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
-
-                        if(boardFill[y][x] != 1):
-
-                            pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
-
-                        else:
-
-                             pygame.draw.rect(SCREEN, colorBoard[y][x], pygame.Rect(x, y, 1, 1))
 
 
 

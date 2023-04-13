@@ -7,7 +7,7 @@ from threading import Thread
 
 class Game:
 
-    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, mixer):
+    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, mixer, menu):
 
         self.SCREEN = SCREEN
         self.SCREEN_WIDTH = SCREEN_WIDTH
@@ -15,6 +15,8 @@ class Game:
         self.gameBackgroundColor = "black" 
         self.MENU_MOUSE_POS = pygame.mouse.get_pos()
         self.FPS = FPS
+
+        self.menu = menu
 
         self.gameMixer = mixer
 
@@ -25,6 +27,8 @@ class Game:
 
         self.fillBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
         self.colorBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
+
+        self.animateThreads = []
 
     def dealWithGameEvents(self):
         for event in pygame.event.get():
@@ -52,11 +56,28 @@ class Game:
             moveThreads = []
 
             for player in self.players:
-                moveThreads.append(Thread(target = player.movePlayerOnScreen, args = (self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard, self.colorBoard)))
+                moveThreads.append(Thread(target = player.movePlayerOnScreen, args = (self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard, self.colorBoard, self.animateThreads)))
                 moveThreads[-1].start()
 
             for moveThread in moveThreads:
-                moveThread.join()           
+                moveThread.join()      
+                
+            playersAlive = 0
+
+            for player in self.players:
+                if(player.isAlive):
+                    playersAlive += 1
+
+
+            if playersAlive < 2:
+                allAnimationDead = True
+
+                for animateThread in self.animateThreads:
+                    if(animateThread.is_alive()): allAnimationDead = False
+
+                if(allAnimationDead == True): 
+                    self.menu.displayMainMenu()
+                    break       
 
             input = pygame.key.get_pressed() 
 

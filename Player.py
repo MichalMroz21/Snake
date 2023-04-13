@@ -165,7 +165,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill, colorBoard):
+    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill, colorBoard, animateThread):
 
         if self.isAlive:
 
@@ -226,7 +226,9 @@ class Player:
                     if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
                         self.isAlive = False
-                        Thread(target = self.death, args = (boardFill, colorBoard)).start()
+                        deathThread = Thread(target = self.death, args = (boardFill, colorBoard))
+                        animateThread.append(deathThread)
+                        deathThread.start()
                         return
             
             #this has to be below death check
