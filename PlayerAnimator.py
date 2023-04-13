@@ -12,7 +12,7 @@ class PlayerAnimator():
         self.player = player
 
 
-    def animateDeath(self, boardFill, colorBoard):
+    def animateDeath(self, boardFill, colorBoard, particleAmountMin, particleAmountMax):
         
         circle_center = (self.player.pos_x, self.player.pos_y)
 
@@ -27,9 +27,9 @@ class PlayerAnimator():
         playerSpeed = self.player.speed
         FPS = self.player.FPS
 
-        maxTransparency = 255
+        MAX_TRANSPARENCY = 255
 
-        particlesAmount = rand.randint(10, 15)
+        particlesAmount = rand.randint(particleAmountMin, particleAmountMax)
         particlesAlphas = []
         particlesSizes = []
         particlesTransparency = []
@@ -44,7 +44,7 @@ class PlayerAnimator():
             particlesAlphas.append(rand.randint(0 + round(previousAlpha/2), 360))
             particlesSizes.append(rand.randint(round(thickness / 2), round(thickness / 1.5)))
 
-            particlesTransparency.append(rand.uniform(maxTransparency / 2, maxTransparency))
+            particlesTransparency.append(rand.uniform(MAX_TRANSPARENCY / 2, MAX_TRANSPARENCY))
             particlesMaxRadiuses.append(rand.uniform(baseRadius, baseRadius * 1.75))
             particlesVelocities.append(rand.uniform(playerSpeed/2, playerSpeed * 1.5))
 

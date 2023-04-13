@@ -30,6 +30,7 @@ class Game:
 
         self.animateThreads = []
 
+
     def dealWithGameEvents(self):
         for event in pygame.event.get():
 
@@ -75,7 +76,7 @@ class Game:
                 for animateThread in self.animateThreads:
                     if(animateThread.is_alive()): allAnimationDead = False
 
-                if(allAnimationDead == True): 
+                if allAnimationDead: 
 
                     self.gameMixer.pauseMusic()
                     self.gameMixer.selectRandomSong()

@@ -121,9 +121,9 @@ class Player:
 
         mixer.playSoundEffect(mixer.SoundBoard.death)
 
-        self.animator.animateDeath(boardFill, colorBoard)
+        self.animator.animateDeath(boardFill, colorBoard, 10, 15)
 
-    def checkIfPoroundIsInArea(self, poround, squarePoround):
+    def checkIfPointIsInArea(self, poround, squarePoround):
 
         angle = squarePoround[2]
         angle = angle % 360
@@ -202,7 +202,7 @@ class Player:
                             y = self.saveFirstRectangle[1] + b
                             x = self.saveFirstRectangle[0] + a
 
-                            if self.checkIfPoroundIsInArea([x, y], self.saveFirstRectangle):
+                            if self.checkIfPointIsInArea([x, y], self.saveFirstRectangle):
 
                                 pygame.draw.rect(SCREEN, self.color, pygame.Rect(x, y, 1, 1))
 

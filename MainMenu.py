@@ -130,8 +130,6 @@ class MainMenu:
 
     def options(self):
 
-        curWidth = self.SCREEN_WIDTH
-        curHeight = self.SCREEN_HEIGHT
         curIndex = self.RESOLUTIONS_INDEX[str(self.SCREEN_WIDTH) + "x" + str(self.SCREEN_HEIGHT)]
 
         initialIndex = curIndex
