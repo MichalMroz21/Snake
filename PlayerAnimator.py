@@ -16,9 +16,9 @@ class PlayerAnimator():
         
         circle_center = (self.player.pos_x, self.player.pos_y)
 
-        SCREEN_WIDTH = self.player.SCREEN_WIDTH
-        SCREEN_HEIGHT = self.player.SCREEN_HEIGHT
-        SCREEN = self.player.SCREEN
+        screenWidth = self.player.screenWidth
+        screenHeight = self.player.screenHeight
+        screen = self.player.screen
 
         playerColor = self.player.color
         gameBackgroundColor = self.player.gameBackgroundColor
@@ -36,7 +36,7 @@ class PlayerAnimator():
         particlesMaxRadiuses = []
         particlesVelocities = []
 
-        baseRadius = (SCREEN_WIDTH * SCREEN_HEIGHT)/2 / (thickness * 1.5) / (1280 * 720 / (1280 + 720))
+        baseRadius = (screenWidth * screenHeight)/2 / (thickness * 1.5) / (1280 * 720 / (1280 + 720))
         previousAlpha = 0
 
         for i in range(0, particlesAmount):
@@ -74,15 +74,15 @@ class PlayerAnimator():
                             y = round(yPrev) + b
                             x = round(xPrev) + a
 
-                            if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
+                            if(x >= screenWidth or x < 0 or y < 0 or y >= screenHeight): continue
 
                             if(boardFill[y][x] != 1):
 
-                                pygame.draw.rect(SCREEN, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+                                pygame.draw.rect(screen, gameBackgroundColor, pygame.Rect(x, y, 1, 1))
 
                             else:
 
-                                pygame.draw.rect(SCREEN, colorBoard[y][x], pygame.Rect(x, y, 1, 1))
+                                pygame.draw.rect(screen, colorBoard[y][x], pygame.Rect(x, y, 1, 1))
 
 
                 if particleRadiuses[i] >= particlesMaxRadiuses[i]:
@@ -101,13 +101,13 @@ class PlayerAnimator():
                             y = round(yTop) + b
                             x = round(xTop) + a
 
-                            if(x >= SCREEN_WIDTH or x < 0 or y < 0 or y >= SCREEN_HEIGHT): continue
+                            if(x >= screenWidth or x < 0 or y < 0 or y >= screenHeight): continue
 
                             s = pygame.Surface((1, 1))
                             s.set_alpha(transparency)
                             s.fill(playerColor)
 
-                            SCREEN.blit(s, (x, y))            
+                            screen.blit(s, (x, y))            
 
 
                 previousRadiuses[i] = particleRadiuses[i]

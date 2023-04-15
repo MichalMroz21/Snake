@@ -7,11 +7,11 @@ from threading import Thread
 
 class Game:
 
-    def __init__(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, FPS, mixer, menu):
+    def __init__(self, screen, screenWidth, screenHeight, FPS, mixer, menu):
 
-        self.SCREEN = SCREEN
-        self.SCREEN_WIDTH = SCREEN_WIDTH
-        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.screen = screen
+        self.screenWidth = screenWidth
+        self.screenHeight = screenHeight
         self.gameBackgroundColor = "black" 
         self.MENU_MOUSE_POS = pygame.mouse.get_pos()
         self.FPS = FPS
@@ -22,11 +22,11 @@ class Game:
 
         self.players = []
 
-        self.players.append(Player("Red", self.SCREEN_WIDTH, self.SCREEN_HEIGHT, 'a', 'd', self.gameBackgroundColor, self.SCREEN, self.FPS))
-        self.players.append(Player("Blue", self.SCREEN_WIDTH, self.SCREEN_HEIGHT, 'g', 'j', self.gameBackgroundColor, self.SCREEN, self.FPS))
+        self.players.append(Player("Red", self.screenWidth, self.screenHeight, 'a', 'd', self.gameBackgroundColor, self.screen, self.FPS))
+        self.players.append(Player("Blue", self.screenWidth, self.screenHeight, 'g', 'j', self.gameBackgroundColor, self.screen, self.FPS))
 
-        self.fillBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
-        self.colorBoard = [[0 for x in range(self.SCREEN_WIDTH)] for y in range(self.SCREEN_HEIGHT)] 
+        self.fillBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)] 
+        self.colorBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)] 
 
         self.animateThreads = []
 
@@ -46,7 +46,7 @@ class Game:
 
         self.gameMixer.switchMusicAndPlay()
 
-        self.SCREEN.fill(self.gameBackgroundColor)
+        self.screen.fill(self.gameBackgroundColor)
 
         clock = pygame.time.Clock() 
         
@@ -57,7 +57,7 @@ class Game:
             moveThreads = []
 
             for player in self.players:
-                moveThreads.append(Thread(target = player.movePlayerOnScreen, args = (self.SCREEN, self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.fillBoard, self.colorBoard, self.animateThreads, self.gameMixer)))
+                moveThreads.append(Thread(target = player.movePlayerOnscreen, args = (self.screen, self.screenWidth, self.screenHeight, self.fillBoard, self.colorBoard, self.animateThreads, self.gameMixer)))
                 moveThreads[-1].start()
 
             for moveThread in moveThreads:

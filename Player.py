@@ -9,19 +9,19 @@ from PlayerAnimator import PlayerAnimator
 
 class Player:
 
-    def __init__(self, color, SCREEN_WIDTH, SCREEN_HEIGHT, left, right, gameBackgroundColor, SCREEN, FPS):
+    def __init__(self, color, screenWidth, screenHeight, left, right, gameBackgroundColor, screen, FPS):
         
         self.thickness = 5 #max 20, small optimization problems for more, collision problems for more, default: 5
         self.spawnMargin = 200
 
-        self.SCREEN_WIDTH = SCREEN_WIDTH
-        self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.SCREEN = SCREEN
+        self.screenWidth = screenWidth
+        self.screenHeight = screenHeight
+        self.screen = screen
 
         self.FPS = FPS
 
-        self.pos_x = rand.randint(1 + self.spawnMargin, self.SCREEN_WIDTH - self.thickness - self.spawnMargin)
-        self.pos_y = rand.randint(1 + self.spawnMargin, self.SCREEN_HEIGHT - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
+        self.pos_x = rand.randint(1 + self.spawnMargin, self.screenWidth - self.thickness - self.spawnMargin)
+        self.pos_y = rand.randint(1 + self.spawnMargin, self.screenHeight - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
 
         self.firstSquareClear = True
         self.saveFirstRectangle = []
@@ -48,7 +48,7 @@ class Player:
         self.previousHeadPositionsMaxSize = 0
         self.updatePreviousHeadPositionsMaxSize()
 
-        self.previousHeadPositionsMap = [[0 for x in range(SCREEN_WIDTH)] for y in range(SCREEN_HEIGHT)] 
+        self.previousHeadPositionsMap = [[0 for x in range(screenWidth)] for y in range(screenHeight)] 
         self.previousHeadPositions = deque()
 
         self.animator = PlayerAnimator(self)
@@ -163,7 +163,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnScreen(self, SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, boardFill, colorBoard, animateThread, mixer):
+    def movePlayerOnscreen(self, screen, screenWidth, screenHeight, boardFill, colorBoard, animateThread, mixer):
 
         if self.isAlive:
 
@@ -181,7 +181,7 @@ class Player:
                         y = self.previousPosition[1] + b
                         x = self.previousPosition[0] + a
 
-                        pygame.draw.rect(SCREEN, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+                        pygame.draw.rect(screen, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
 
                         boardFill[round(y)][round(x)] = 0
                         colorBoard[(round(y))][round(x)] = self.gameBackgroundColor
@@ -204,7 +204,7 @@ class Player:
 
                             if self.checkIfPointIsInArea([x, y], self.saveFirstRectangle):
 
-                                pygame.draw.rect(SCREEN, self.color, pygame.Rect(x, y, 1, 1))
+                                pygame.draw.rect(screen, self.color, pygame.Rect(x, y, 1, 1))
 
                                 boardFill[round(y)][round(x)] = 1
                                 colorBoard[(round(y))][round(x)] = self.color
@@ -213,7 +213,7 @@ class Player:
             if not self.checkIfCreatingPass():    
                 self.clearSaveFirstRectangle()
 
-            pygame.draw.rect(SCREEN, self.color, pygame.Rect(newPositionHead[0], newPositionHead[1], self.thickness, self.thickness))
+            pygame.draw.rect(screen, self.color, pygame.Rect(newPositionHead[0], newPositionHead[1], self.thickness, self.thickness))
 
             for a in range(0, self.thickness):
                 for b in range(0, self.thickness):
@@ -221,7 +221,7 @@ class Player:
                     y = round(newPositionHead[1]) + b
                     x = round(newPositionHead[0]) + a
 
-                    if (y >= SCREEN_HEIGHT or y < 0 or x >= SCREEN_WIDTH or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
+                    if (y >= screenHeight or y < 0 or x >= screenWidth or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
                         self.isAlive = False
                         deathThread = Thread(target = self.death, args = (boardFill, colorBoard, mixer))
