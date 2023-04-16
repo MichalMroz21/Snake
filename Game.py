@@ -81,7 +81,7 @@ class Game:
                     self.gameMixer.pauseMusic()
                     self.gameMixer.selectRandomSong()
 
-                    self.menu.displayMainMenu(firstTime = True)
+                    #self.menu.displayMainMenu(firstTime = True)
                     break       
 
             input = pygame.key.get_pressed() 

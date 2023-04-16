@@ -2,6 +2,9 @@ from Button import Button
 from Game import Game
 from Mixer import Mixer
 from Slider import Slider
+from Lobby import Lobby
+
+from Font import Font
 
 import pygame
 import pygame, sys
@@ -75,33 +78,32 @@ class MainMenu:
         self.BG = pygame.image.load("assets/picture/MenuBackground.jpg")
         self.BG = pygame.transform.scale(self.BG, (self.screenWidth, self.screenHeight))
 
-        self.titleFontSize = (self.screenWidth + self.screenHeight) / 20
-        self.normalTextFontSize = (self.screenWidth + self.screenHeight) / 28
+        self.Font = Font(self.screenWidth, self.screenHeight)
 
-        self.MENU_TEXT = self.get_font(self.titleFontSize).render("Snake Game", True, "Yellow")
+        self.MENU_TEXT = self.Font.get_title_font().render("Snake Game", True, "Yellow")
         self.MENU_RECT = self.MENU_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 7.2))
 
-        self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.8), text_input="PLAY", font=self.get_font(self.normalTextFontSize), base_color="White", hovering_color="Red")
-        self.OPTIONS_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.8), text_input="OPTIONS", font=self.get_font(self.normalTextFontSize), base_color="White", hovering_color="Red")
-        self.QUIT_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.3), text_input="QUIT", font=self.get_font(self.normalTextFontSize), base_color="White", hovering_color="Red")
+        self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.8), text_input="PLAY", font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
+        self.OPTIONS_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.8), text_input="OPTIONS", font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
+        self.QUIT_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.3), text_input="QUIT", font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
 
         self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        self.OPTIONS_TEXT = self.get_font(self.titleFontSize).render("Options", True, "Yellow")
+        self.OPTIONS_TEXT = self.Font.get_title_font().render("Options", True, "Yellow")
         self.OPTIONS_RECT = self.OPTIONS_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 8.5))
 
-        self.OPTIONS_BACK = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.1), text_input="GO BACK", font=self.get_font(self.normalTextFontSize/2), base_color="White", hovering_color="Red")
+        self.OPTIONS_BACK = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.1), text_input="GO BACK", font=self.Font.get_normal_font(smaller = 2), base_color="White", hovering_color="Red")
 
-        self.OPTIONS_TEXT_RESOLUTION = self.get_font(self.normalTextFontSize/ 1.5).render("Resolution", True, "White")
+        self.OPTIONS_TEXT_RESOLUTION = self.Font.get_normal_font(1.5).render("Resolution", True, "White")
         self.OPTIONS_RECT_RESOLUTION = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2, self.screenHeight / 4.0))
 
-        self.OPTIONS_RESOLUTION = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 3.0), text_input=(str(self.screenWidth) + "x" + str(self.screenHeight)), font=self.get_font(self.normalTextFontSize/2), base_color="White", hovering_color="Red")
-        self.OPTIONS_APPLY = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.5), text_input="APPLY", font=self.get_font(self.normalTextFontSize/2), base_color="White", hovering_color="Red")
+        self.OPTIONS_RESOLUTION = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 3.0), text_input=(str(self.screenWidth) + "x" + str(self.screenHeight)), font=self.Font.get_normal_font(smaller = 2), base_color="White", hovering_color="Red")
+        self.OPTIONS_APPLY = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.5), text_input="APPLY", font=self.Font.get_normal_font(smaller = 2), base_color="White", hovering_color="Red")
 
         sliderWidth = self.screenWidth/3
         sliderHeight = self.screenHeight/20
 
-        self.OPTIONS_TEXT_MUSIC = self.get_font(self.normalTextFontSize/2).render("Music Volume", True, "White")
+        self.OPTIONS_TEXT_MUSIC = self.Font.get_normal_font(smaller = 2).render("Music Volume", True, "White")
         self.OPTIONS_RECT_MUSIC = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2.0, self.screenHeight / 1.9))
 
         if 'OPTIONS_MUSIC_SLIDER' in dir(self):
@@ -109,7 +111,7 @@ class MainMenu:
         else:
             self.OPTIONS_MUSIC_SLIDER = Slider(self.screenWidth / 2 - sliderWidth/2, self.screenHeight / 1.7, sliderWidth, sliderHeight, (200, 200, 200), (255, 30, 30), 1, 0, 1, sliderHeight, 0.5)
 
-        self.OPTIONS_TEXT_SOUND = self.get_font(self.normalTextFontSize/2).render("Effects Volume", True, "White")
+        self.OPTIONS_TEXT_SOUND = self.Font.get_normal_font(smaller = 2).render("Effects Volume", True, "White")
         self.OPTIONS_RECT_SOUND = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2.0, self.screenHeight / 1.4))
 
         if 'OPTIONS_SOUND_SLIDER' in dir(self):
@@ -118,10 +120,6 @@ class MainMenu:
             self.OPTIONS_SOUND_SLIDER = Slider(self.screenWidth / 2 - sliderWidth/2, self.screenHeight / 1.3, sliderWidth, sliderHeight, (200, 200, 200), (30, 255, 30), 1, 0, 1, sliderHeight, 0.5)
 
         self.displayMainMenu(firstTime = firstTime)
-
-        
-    def get_font(self, size): 
-        return pygame.font.Font("assets/font/Lato-Regular.ttf", round(size))
 
 
     def setGameWindowCenter(self, x, y):
@@ -223,8 +221,10 @@ class MainMenu:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.PLAY_BUTTON.checkForInput(self.MENU_MOUSE_POS):
 
-                        game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self)
-                        game.play()
+                       game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self)
+                       game.play()
+                      #lobby = Lobby(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.Font)
+                      #lobby.displayLobby()
                         
 
                     if self.OPTIONS_BUTTON.checkForInput(self.MENU_MOUSE_POS):
