@@ -24,6 +24,9 @@
     <Compile Include="Button.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ColorPicker.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Font.py">
       <SubType>Code</SubType>
     </Compile>

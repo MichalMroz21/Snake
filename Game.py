@@ -7,7 +7,7 @@ from threading import Thread
 
 class Game:
 
-    def __init__(self, screen, screenWidth, screenHeight, FPS, mixer, menu):
+    def __init__(self, screen, screenWidth, screenHeight, FPS, mixer, menu, lobbyPlayers):
 
         self.screen = screen
         self.screenWidth = screenWidth
@@ -20,10 +20,13 @@ class Game:
 
         self.gameMixer = mixer
 
+        self.lobbyPlayers = lobbyPlayers
         self.players = []
 
-        self.players.append(Player("Red", self.screenWidth, self.screenHeight, 'a', 'd', self.gameBackgroundColor, self.screen, self.FPS))
-        self.players.append(Player("Blue", self.screenWidth, self.screenHeight, 'g', 'j', self.gameBackgroundColor, self.screen, self.FPS))
+        for player in lobbyPlayers:
+            if player.isAdded:
+                self.players.append(Player(player.color, self.screenWidth, self.screenHeight, 'a', 'd', self.gameBackgroundColor, self.screen, self.FPS, player.speed, player.thickness, player.name))
+
 
         self.fillBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)] 
         self.colorBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)] 
@@ -81,7 +84,6 @@ class Game:
                     self.gameMixer.pauseMusic()
                     self.gameMixer.selectRandomSong()
 
-                    #self.menu.displayMainMenu(firstTime = True)
                     break       
 
             input = pygame.key.get_pressed() 

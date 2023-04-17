@@ -2,6 +2,7 @@ import pygame, sys
 
 from Button import Button
 from LobbyPlayer import LobbyPlayer
+from Game import Game
 
 import time 
 
@@ -31,8 +32,8 @@ class Lobby:
 
 
     def initializeGUI(self):
-        #self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.8), text_input="PLAY", font=font.get_font(self.normalTextFontSize), base_color="White", hovering_color="Red")
-        pass
+        self.BACK_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.3), text_input="BACK", font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
+        self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.1), text_input="PLAY", font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
 
 
     def displayLobby(self):
@@ -41,9 +42,16 @@ class Lobby:
 
             self.screen.blit(self.BG, (0, 0))
             self.LOBBY_MOUSE_POS = pygame.mouse.get_pos()
+            self.LOBBY_MOUSE_BUTTONS = pygame.mouse.get_pressed()
+
+            self.PLAY_BUTTON.changeColor(self.LOBBY_MOUSE_POS)
+            self.PLAY_BUTTON.update(self.screen)
+
+            self.BACK_BUTTON.changeColor(self.LOBBY_MOUSE_POS)
+            self.BACK_BUTTON.update(self.screen)
            
             for lobbyPlayer in self.lobbyPlayers:
-                lobbyPlayer.displayPlayer(self.LOBBY_MOUSE_POS)
+                lobbyPlayer.displayPlayer(self.LOBBY_MOUSE_POS, self.LOBBY_MOUSE_BUTTONS)
             
             for event in pygame.event.get():
 
@@ -62,6 +70,15 @@ class Lobby:
                                 lobbyPlayer.disableTextInput()
 
                             i += 1
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.BACK_BUTTON.checkForInput(self.LOBBY_MOUSE_POS):
+                        return
+
+                    if self.PLAY_BUTTON.checkForInput(self.LOBBY_MOUSE_POS):
+                         game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.lobbyPlayers)
+                         game.play()
+                         return
                         
                 if event.type == self.mixer.SONG_END:
                     self.mixer.playMenuMusic()

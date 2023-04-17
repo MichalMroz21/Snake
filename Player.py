@@ -9,16 +9,17 @@ from PlayerAnimator import PlayerAnimator
 
 class Player:
 
-    def __init__(self, color, screenWidth, screenHeight, left, right, gameBackgroundColor, screen, FPS):
+    def __init__(self, color, screenWidth, screenHeight, left, right, gameBackgroundColor, screen, FPS, speed, thickness, name):
         
-        self.thickness = 5 #max 20, small optimization problems for more, collision problems for more, default: 5
-        self.spawnMargin = 200
-
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
         self.screen = screen
 
+        self.thickness = thickness #max 20, small optimization problems for more, collision problems for more, default: 5
+        self.spawnMargin = (self.screenWidth + self.screenHeight) / 10
+
         self.FPS = FPS
+        self.name = name
 
         self.pos_x = rand.randint(1 + self.spawnMargin, self.screenWidth - self.thickness - self.spawnMargin)
         self.pos_y = rand.randint(1 + self.spawnMargin, self.screenHeight - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
@@ -35,7 +36,7 @@ class Player:
         self.alphaChange = 3 #should work for 90, default: 3, max 90 test for others
         self.steerStrength = 1 #this is prob not needed, so can be left at 1
 
-        self.speed = 1.75 #default: 1.75 no max test for speed
+        self.speed = speed #default: 1.75 no max test for speed
         self.color = color
         self.gameBackgroundColor = gameBackgroundColor
         self.previousPosition = []
