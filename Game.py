@@ -25,7 +25,7 @@ class Game:
 
         for player in lobbyPlayers:
             if player.isAdded:
-                self.players.append(Player(player.color, self.screenWidth, self.screenHeight, 'a', 'd', self.gameBackgroundColor, self.screen, self.FPS, player.speed, player.thickness, player.name))
+                self.players.append(Player(player.color, self.screenWidth, self.screenHeight, player.Left, player.Right, self.gameBackgroundColor, self.screen, self.FPS, player.speed, player.thickness, player.name))
 
 
         self.fillBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)] 
