@@ -168,8 +168,8 @@ class LobbyPlayer:
                     if self.whichPicked == 0:
                         self.name = self.name[:-1]
 
-                elif len(self.name) < self.maxNameLength and event.unicode.isalnum():
-                    if self.whichPicked == 0:
+                elif event.unicode.isalnum():
+                    if self.whichPicked == 0 and len(self.name) < self.maxNameLength:
                         self.name += event.unicode.upper()
                     if self.whichPicked == 1 and event.unicode.isalpha():
                         self.Left = event.unicode.lower()
