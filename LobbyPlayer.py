@@ -1,6 +1,7 @@
 import pygame
 from Button import Button
 from ColorPicker import ColorPicker
+from TextBox import TextBox
 
 class LobbyPlayer:
 
