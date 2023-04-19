@@ -2,9 +2,15 @@ import pygame
 from Button import Button
 from ColorPicker import ColorPicker
 from TextBox import TextBox
+import enum
+
+class BOX_ID(enum.Enum):
+    NAME_BOX = 0
+    LEFT_BOX = 1
+    RIGHT_BOX = 2
 
 class LobbyPlayer:
-
+  
     def __init__(self, screen, screenWidth, screenHeight, whichPlayer, font): #whichPlayer from 1. 1,2,3,4...
               
         self.screen = screen
@@ -52,7 +58,7 @@ class LobbyPlayer:
         self.TEXT_RECT_COLOR = pygame.Color('lightskyblue3')
         self.TEXT_RECT_COLOR_PICKED = pygame.Color('Red')
 
-        self.NAME_BOX = TextBox(self.TEXT_BOX_X_POS, self.TEXT_BOX_Y_POS, self.TEXT_BOX_WIDTH, self.TEXT_BOX_HEIGHT, self.TEXT_RECT_COLOR, self.TEXT_RECT_COLOR_PICKED, self.nickFont, self.name, 0)
+        self.NAME_BOX = TextBox(self.TEXT_BOX_X_POS, self.TEXT_BOX_Y_POS, self.TEXT_BOX_WIDTH, self.TEXT_BOX_HEIGHT, self.TEXT_RECT_COLOR, self.TEXT_RECT_COLOR_PICKED, self.nickFont, self.name, BOX_ID.NAME_BOX.value)
 
         self.SNAKE_RECT_HEIGHT_MULTIPLIER = 5
 
@@ -91,7 +97,7 @@ class LobbyPlayer:
         self.LEFT_RECT_COLOR = pygame.Color('lightskyblue3')
         self.LEFT_RECT_COLOR_PICKED = pygame.Color('Red')
 
-        self.LEFT_BOX = TextBox(self.LEFT_BOX_X_POS, self.LEFT_BOX_Y_POS, self.LEFT_BOX_WIDTH, self.LEFT_BOX_HEIGHT, self.LEFT_RECT_COLOR, self.LEFT_RECT_COLOR_PICKED, self.nickFont, self.Left, 1)
+        self.LEFT_BOX = TextBox(self.LEFT_BOX_X_POS, self.LEFT_BOX_Y_POS, self.LEFT_BOX_WIDTH, self.LEFT_BOX_HEIGHT, self.LEFT_RECT_COLOR, self.LEFT_RECT_COLOR_PICKED, self.nickFont, self.Left, BOX_ID.LEFT_BOX.value)
 
         self.RIGHT_BOX_WIDTH = ( self.maxNameLength / 2 + self.maxNameLength / 5 ) * self.nickFontSize / 4
         self.RIGHT_BOX_HEIGHT = self.nickFontSize 
@@ -102,12 +108,11 @@ class LobbyPlayer:
         self.RIGHT_RECT_COLOR = pygame.Color('lightskyblue3')
         self.RIGHT_RECT_COLOR_PICKED = pygame.Color('Red')
 
-        self.RIGHT_BOX = TextBox(self.RIGHT_BOX_X_POS, self.RIGHT_BOX_Y_POS, self.RIGHT_BOX_WIDTH, self.RIGHT_BOX_HEIGHT, self.RIGHT_RECT_COLOR, self.RIGHT_RECT_COLOR_PICKED, self.nickFont, self.Right, 2)
-
+        self.RIGHT_BOX = TextBox(self.RIGHT_BOX_X_POS, self.RIGHT_BOX_Y_POS, self.RIGHT_BOX_WIDTH, self.RIGHT_BOX_HEIGHT, self.RIGHT_RECT_COLOR, self.RIGHT_RECT_COLOR_PICKED, self.nickFont, self.Right, BOX_ID.RIGHT_BOX.value)
 
         self.TEXT_BOXES = [self.NAME_BOX, self.LEFT_BOX, self.RIGHT_BOX]
         
-        self.whichPicked = 0
+        self.whichPicked = BOX_ID.NAME_BOX.value
 
         self.isTextPicked = False
         self.isAdded = False
@@ -157,7 +162,7 @@ class LobbyPlayer:
 
                     for TEXT_BOX in self.TEXT_BOXES:
                         if self.whichPicked == TEXT_BOX.text_id:
-                            if TEXT_BOX.text_id == 0:
+                            if TEXT_BOX.text_id == BOX_ID.NAME_BOX.value:
                                 TEXT_BOX.popBackText()
 
                 elif event.unicode.isalnum():
@@ -166,9 +171,9 @@ class LobbyPlayer:
 
                         if self.whichPicked == TEXT_BOX.text_id:
 
-                            if TEXT_BOX.text_id == 0 and len(TEXT_BOX.text) < self.maxNameLength:
+                            if TEXT_BOX.text_id == BOX_ID.NAME_BOX.value and len(TEXT_BOX.text) < self.maxNameLength:
                                 TEXT_BOX.addToText(event.unicode.upper())
-                            if (TEXT_BOX.text_id == 1 or TEXT_BOX.text_id == 2) and event.unicode.isalpha():
+                            if (TEXT_BOX.text_id == BOX_ID.LEFT_BOX.value or TEXT_BOX.text_id == BOX_ID.RIGHT_BOX.value) and event.unicode.isalpha():
                                 TEXT_BOX.setText(event.unicode.lower())
                                 
 
@@ -177,7 +182,7 @@ class LobbyPlayer:
             if self.isAdded == True:
                 for TEXT_BOX in self.TEXT_BOXES:
                      TEXT_BOX_ID = TEXT_BOX.checkIfClicked(x, y)
-                     if TEXT_BOX_ID != -1:
+                     if TEXT_BOX_ID != None:
                          self.isTextPicked = True
                          self.whichPicked = TEXT_BOX_ID
                          return self.whichPlayer

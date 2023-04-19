@@ -37,7 +37,7 @@ class TextBox():
         if mousePosX >= self.TEXT_RECT.x and mousePosX <= self.TEXT_RECT.x + self.TEXT_RECT.width and mousePosY >= self.TEXT_RECT.y and mousePosY <= self.TEXT_RECT.y + self.TEXT_RECT.height:
             return self.text_id
 
-        else: return -1
+        else: return None
 
     def addToText(self, char):
         self.text += char
