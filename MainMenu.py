@@ -22,6 +22,7 @@ class MainMenu:
 
         pygame.init()
 
+        self.GAME_TITLE = "Snake Game"
         self.maxResolutionObject = pygame.display.Info()
 
         self.maxResolutionWidth = self.maxResolutionObject.current_w
@@ -45,7 +46,6 @@ class MainMenu:
             if(resolution[0] <= self.maxResolutionWidth and resolution[1] <= self.maxResolutionHeight):
                 self.RESOLUTIONS_INDEX[str(resolution[0]) + "x" + str(resolution[1])] = i 
                 i += 1
-
 
         self.resolutionsAmount = len(self.RESOLUTIONS_INDEX)
 
@@ -73,14 +73,14 @@ class MainMenu:
 
         self.screen = pygame.display.set_mode((self.screenWidth, self.screenHeight) ) 
 
-        pygame.display.set_caption("Snake Game")
+        pygame.display.set_caption(self.GAME_TITLE)
 
         self.BG = pygame.image.load("assets/picture/MenuBackground.jpg")
         self.BG = pygame.transform.scale(self.BG, (self.screenWidth, self.screenHeight))
 
         self.Font = Font(self.screenWidth, self.screenHeight)
 
-        self.MENU_TEXT = self.Font.get_title_font().render("Snake Game", True, "Yellow")
+        self.MENU_TEXT = self.Font.get_title_font().render(self.GAME_TITLE, True, "Yellow")
         self.MENU_RECT = self.MENU_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 7.2))
 
         self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.8), text_input="PLAY", font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
@@ -136,25 +136,19 @@ class MainMenu:
 
             self.screen.blit(self.BG, (0, 0))
 
-            self.screen.blit(self.OPTIONS_TEXT, self.OPTIONS_RECT)
-            self.screen.blit(self.OPTIONS_TEXT_RESOLUTION, self.OPTIONS_RECT_RESOLUTION)
-            self.screen.blit(self.OPTIONS_TEXT_MUSIC, self.OPTIONS_RECT_MUSIC)
-            self.screen.blit(self.OPTIONS_TEXT_SOUND, self.OPTIONS_RECT_SOUND)
+            for menuObject in [(self.OPTIONS_TEXT, self.OPTIONS_RECT), (self.OPTIONS_TEXT_RESOLUTION, self.OPTIONS_RECT_RESOLUTION),
+                               (self.OPTIONS_TEXT_MUSIC, self.OPTIONS_RECT_MUSIC), (self.OPTIONS_TEXT_SOUND, self.OPTIONS_RECT_SOUND)]:
+
+                self.screen.blit(menuObject[0], menuObject[1])
 
             self.OPTIONS_MUSIC_SLIDER.draw(self.screen)
             self.OPTIONS_SOUND_SLIDER.draw(self.screen)
      
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-            self.OPTIONS_BACK.changeColor(self.MENU_MOUSE_POS)
-            self.OPTIONS_BACK.update(self.screen)
-
-            self.OPTIONS_RESOLUTION.changeColor(self.MENU_MOUSE_POS)
-            self.OPTIONS_RESOLUTION.update(self.screen)
-
-            self.OPTIONS_APPLY.changeColor(self.MENU_MOUSE_POS)
-            self.OPTIONS_APPLY.update(self.screen)
-
+            for button in [self.OPTIONS_BACK, self.OPTIONS_RESOLUTION, self.OPTIONS_APPLY]:
+                button.changeColor(self.MENU_MOUSE_POS)
+                button.update(self.screen)
             
             for event in pygame.event.get():
 
@@ -163,6 +157,7 @@ class MainMenu:
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+
                     if self.OPTIONS_BACK.checkForInput(self.MENU_MOUSE_POS):
                         self.OPTIONS_RESOLUTION.changeText(self.RESOLUTIONS_MAP[initialIndex][0] + "x" + self.RESOLUTIONS_MAP[initialIndex][1])
                         self.displayMainMenu()
@@ -177,12 +172,12 @@ class MainMenu:
                         self.OPTIONS_RESOLUTION.changeText(self.RESOLUTIONS_MAP[curIndex][0] + "x" + self.RESOLUTIONS_MAP[curIndex][1])
 
                     if self.OPTIONS_APPLY.checkForInput(self.MENU_MOUSE_POS):
-
                         self.screenWidth = int(self.RESOLUTIONS_MAP[curIndex][0])
                         self.screenHeight = int(self.RESOLUTIONS_MAP[curIndex][1])
                         self.resolution_init(firstTime = False)
 
                 if pygame.mouse.get_pressed()[0]:
+
                     self.OPTIONS_MUSIC_SLIDER.update(self.MENU_MOUSE_POS)
                     self.OPTIONS_SOUND_SLIDER.update(self.MENU_MOUSE_POS)
 

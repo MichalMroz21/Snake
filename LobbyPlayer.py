@@ -83,8 +83,8 @@ class LobbyPlayer:
         self.defaultLeft =  'a'
         self.defaultRight = 'd'
 
-        self.Left = self.defaultLeft
-        self.Right = self.defaultRight
+        self.initialLeft = self.defaultLeft
+        self.initialRight = self.defaultRight
 
         self.LEFT_BOX_WIDTH = ( self.maxNameLength / 2 + self.maxNameLength / 5 ) * self.nickFontSize / 4
         self.LEFT_BOX_HEIGHT = self.nickFontSize 
@@ -95,9 +95,13 @@ class LobbyPlayer:
         self.LEFT_RECT = pygame.Rect(self.LEFT_BOX_X_POS, self.LEFT_BOX_Y_POS, self.LEFT_BOX_WIDTH, self.LEFT_BOX_HEIGHT)
 
         self.LEFT_RECT_COLOR = pygame.Color('lightskyblue3')
-        self.LEFT_RECT_COLOR_PICKED = pygame.Color('Red')
+        self.LEFT_RECT_COLOR_PICKED = pygame.Color('Blue')
 
-        self.LEFT_BOX = TextBox(self.LEFT_BOX_X_POS, self.LEFT_BOX_Y_POS, self.LEFT_BOX_WIDTH, self.LEFT_BOX_HEIGHT, self.LEFT_RECT_COLOR, self.LEFT_RECT_COLOR_PICKED, self.nickFont, self.Left, BOX_ID.LEFT_BOX.value)
+        self.LEFT_BOX = TextBox(self.LEFT_BOX_X_POS, self.LEFT_BOX_Y_POS, self.LEFT_BOX_WIDTH, self.LEFT_BOX_HEIGHT, self.LEFT_RECT_COLOR, self.LEFT_RECT_COLOR_PICKED, self.nickFont, self.initialLeft, BOX_ID.LEFT_BOX.value)
+
+        self.LEFT_TEXT_WIDTH, self.LEFT_TEXT_HEIGHT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).size("<-")
+        self.LEFT_TEXT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).render("<-", True, "White")
+        self.LEFT_TEXT_RECT = self.LEFT_TEXT.get_rect(center=(self.LEFT_BOX_X_POS + self.LEFT_BOX_WIDTH/2, self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT + (self.LEFT_BOX_Y_POS - self.COLOR_PICKER_Y_POS - self.COLOR_PICKER_HEIGHT - self.LEFT_TEXT_HEIGHT / 4)/2))
 
         self.RIGHT_BOX_WIDTH = ( self.maxNameLength / 2 + self.maxNameLength / 5 ) * self.nickFontSize / 4
         self.RIGHT_BOX_HEIGHT = self.nickFontSize 
@@ -105,10 +109,14 @@ class LobbyPlayer:
         self.RIGHT_BOX_X_POS = self.COLOR_PICKER_X_POS + self.COLOR_PICKER_WIDTH - self.RIGHT_BOX_WIDTH
         self.RIGHT_BOX_Y_POS = self.COLOR_PICKER_Y_POS + self.RIGHT_BOX_HEIGHT
 
-        self.RIGHT_RECT_COLOR = pygame.Color('lightskyblue3')
-        self.RIGHT_RECT_COLOR_PICKED = pygame.Color('Red')
+        self.RIGHT_RECT_COLOR = self.LEFT_RECT_COLOR
+        self.RIGHT_RECT_COLOR_PICKED = self.LEFT_RECT_COLOR_PICKED
 
-        self.RIGHT_BOX = TextBox(self.RIGHT_BOX_X_POS, self.RIGHT_BOX_Y_POS, self.RIGHT_BOX_WIDTH, self.RIGHT_BOX_HEIGHT, self.RIGHT_RECT_COLOR, self.RIGHT_RECT_COLOR_PICKED, self.nickFont, self.Right, BOX_ID.RIGHT_BOX.value)
+        self.RIGHT_BOX = TextBox(self.RIGHT_BOX_X_POS, self.RIGHT_BOX_Y_POS, self.RIGHT_BOX_WIDTH, self.RIGHT_BOX_HEIGHT, self.RIGHT_RECT_COLOR, self.RIGHT_RECT_COLOR_PICKED, self.nickFont, self.initialRight, BOX_ID.RIGHT_BOX.value)
+
+        self.RIGHT_TEXT_WIDTH, self.RIGHT_TEXT_HEIGHT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).size("<-")
+        self.RIGHT_TEXT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).render("->", True, "White")
+        self.RIGHT_TEXT_RECT = self.RIGHT_TEXT.get_rect(center=(self.RIGHT_BOX_X_POS + self.RIGHT_BOX_WIDTH/2, self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT + (self.RIGHT_BOX_Y_POS - self.COLOR_PICKER_Y_POS - self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4)/2))
 
         self.TEXT_BOXES = [self.NAME_BOX, self.LEFT_BOX, self.RIGHT_BOX]
         
@@ -148,6 +156,10 @@ class LobbyPlayer:
 
             self.colorPicker.draw(self.screen)
 
+            for playerObject in [(self.LEFT_TEXT, self.LEFT_TEXT_RECT), (self.RIGHT_TEXT, self.RIGHT_TEXT_RECT)]:
+
+                self.screen.blit(playerObject[0], playerObject[1])
+
 
     def disableTextInput(self):
         self.isTextPicked = False
@@ -158,6 +170,8 @@ class LobbyPlayer:
         if event.type == pygame.KEYDOWN:
             if self.isTextPicked == True:
 
+                characterPressed = event.unicode
+
                 if event.key == pygame.K_BACKSPACE:
 
                     for TEXT_BOX in self.TEXT_BOXES:
@@ -165,23 +179,27 @@ class LobbyPlayer:
                             if TEXT_BOX.text_id == BOX_ID.NAME_BOX.value:
                                 TEXT_BOX.popBackText()
 
-                elif event.unicode.isalnum():
+                elif characterPressed.isalnum():
 
                     for TEXT_BOX in self.TEXT_BOXES:
 
                         if self.whichPicked == TEXT_BOX.text_id:
 
                             if TEXT_BOX.text_id == BOX_ID.NAME_BOX.value and len(TEXT_BOX.text) < self.maxNameLength:
-                                TEXT_BOX.addToText(event.unicode.upper())
-                            if (TEXT_BOX.text_id == BOX_ID.LEFT_BOX.value or TEXT_BOX.text_id == BOX_ID.RIGHT_BOX.value) and event.unicode.isalpha():
-                                TEXT_BOX.setText(event.unicode.lower())
+                                TEXT_BOX.addToText(characterPressed.upper())
+
+                            if ( (TEXT_BOX.text_id == BOX_ID.LEFT_BOX.value and self.RIGHT_BOX.text != characterPressed.lower() and characterPressed.isalpha()) 
+                            or (TEXT_BOX.text_id == BOX_ID.RIGHT_BOX.value and self.LEFT_BOX.text != characterPressed.lower() and characterPressed.isalpha()) ):
+                                TEXT_BOX.setText(characterPressed.lower())
                                 
 
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             if self.isAdded == True:
+
                 for TEXT_BOX in self.TEXT_BOXES:
                      TEXT_BOX_ID = TEXT_BOX.checkIfClicked(x, y)
+
                      if TEXT_BOX_ID != None:
                          self.isTextPicked = True
                          self.whichPicked = TEXT_BOX_ID
@@ -191,6 +209,6 @@ class LobbyPlayer:
                 self.isAdded = True
 
 
-        return 0
+        return None
 
             

@@ -17,6 +17,7 @@ class Game:
         self.FPS = FPS
 
         self.menu = menu
+        self.MINIMUM_ALIVE_PLAYERS = 2
 
         self.gameMixer = mixer
 
@@ -73,7 +74,7 @@ class Game:
                     playersAlive += 1
 
 
-            if playersAlive < 2:
+            if playersAlive < self.MINIMUM_ALIVE_PLAYERS:
                 allAnimationDead = True
 
                 for animateThread in self.animateThreads:

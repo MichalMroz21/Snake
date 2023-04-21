@@ -22,10 +22,11 @@ class Lobby:
         self.LOBBY_MOUSE_POS = pygame.mouse.get_pos()
         
         self.maxPlayers = 4
+        self.whichPlayerID_begin = 1
 
         self.lobbyPlayers = []
 
-        for whichPlayer in range(1, self.maxPlayers + 1):
+        for whichPlayer in range(self.whichPlayerID_begin, self.maxPlayers + 1):
             self.lobbyPlayers.append(LobbyPlayer(self.screen, self.screenWidth, self.screenHeight, whichPlayer, self.Font))
 
         self.initializeGUI()
@@ -62,8 +63,8 @@ class Lobby:
                 for lobbyPlayer in self.lobbyPlayers:
                     textEnabled = lobbyPlayer.checkForInput(self.LOBBY_MOUSE_POS[0], self.LOBBY_MOUSE_POS[1], event)
 
-                    if textEnabled != 0:
-                        i = 1
+                    if textEnabled != None:
+                        i = self.whichPlayerID_begin
 
                         for lobbyPlayer in self.lobbyPlayers:
                             if i != textEnabled:
