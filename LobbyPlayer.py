@@ -133,6 +133,10 @@ class LobbyPlayer:
 
         self.SPEED_BOX = TextBox(self.SPEED_BOX_X_POS, self.SPEED_BOX_Y_POS, self.SPEED_BOX_WIDTH, self.SPEED_BOX_HEIGHT, self.SPEED_RECT_COLOR, self.SPEED_RECT_COLOR_PICKED, self.Font.get_normal_font(smaller=3.0 / math.sqrt(self.sumProportion)), self.initialSpeed, BOX_ID.SPEED_BOX.value)
 
+        self.SPEED_TEXT_WIDTH, self.SPEED_TEXT_HEIGHT = self.Font.get_normal_font(smaller=3.0 / math.sqrt(self.sumProportion)).size("Speed")
+        self.SPEED_TEXT = self.Font.get_normal_font(smaller=3.0 / math.sqrt(self.sumProportion)).render("Speed", True, "White")
+        self.SPEED_TEXT_RECT = self.SPEED_TEXT.get_rect(center=(self.SPEED_BOX_X_POS + self.SPEED_BOX_WIDTH/2, self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT + (self.RIGHT_BOX_Y_POS - self.COLOR_PICKER_Y_POS - self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4)/2))
+
 
         self.TEXT_BOXES = [self.NAME_BOX, self.LEFT_BOX, self.RIGHT_BOX, self.SPEED_BOX]
         
@@ -172,7 +176,7 @@ class LobbyPlayer:
 
             self.colorPicker.draw(self.screen)
 
-            for playerObject in [(self.LEFT_TEXT, self.LEFT_TEXT_RECT), (self.RIGHT_TEXT, self.RIGHT_TEXT_RECT)]:
+            for playerObject in [(self.LEFT_TEXT, self.LEFT_TEXT_RECT), (self.RIGHT_TEXT, self.RIGHT_TEXT_RECT), (self.SPEED_TEXT, self.SPEED_TEXT_RECT)]:
 
                 self.screen.blit(playerObject[0], playerObject[1])
 
