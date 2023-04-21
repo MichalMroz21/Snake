@@ -3,11 +3,13 @@ from Button import Button
 from ColorPicker import ColorPicker
 from TextBox import TextBox
 import enum
+import math
 
 class BOX_ID(enum.Enum):
     NAME_BOX = 0
     LEFT_BOX = 1
     RIGHT_BOX = 2
+    SPEED_BOX = 3
 
 class LobbyPlayer:
   
@@ -30,11 +32,13 @@ class LobbyPlayer:
         self.DefaultColor = "Red"
 
         self.defaultThickness = 5
-        self.defaultSpeed = 1.75
+
+        self.initialSpeed = 1.75
+        self.MAX_PRECISION = 4
+
         self.maxThickness = self.defaultThickness
 
         self.thickness = self.defaultThickness
-        self.speed = self.defaultSpeed
 
         self.whichPlayer = whichPlayer
 
@@ -118,7 +122,19 @@ class LobbyPlayer:
         self.RIGHT_TEXT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).render("->", True, "White")
         self.RIGHT_TEXT_RECT = self.RIGHT_TEXT.get_rect(center=(self.RIGHT_BOX_X_POS + self.RIGHT_BOX_WIDTH/2, self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT + (self.RIGHT_BOX_Y_POS - self.COLOR_PICKER_Y_POS - self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4)/2))
 
-        self.TEXT_BOXES = [self.NAME_BOX, self.LEFT_BOX, self.RIGHT_BOX]
+        self.SPEED_BOX_WIDTH = ( self.maxNameLength / 2 + self.maxNameLength / 5 ) * self.nickFontSize / 4
+        self.SPEED_BOX_HEIGHT = self.nickFontSize 
+
+        self.SPEED_BOX_X_POS = (self.LEFT_BOX_X_POS + self.RIGHT_BOX_X_POS + self.RIGHT_BOX_WIDTH - self.SPEED_BOX_WIDTH)/2
+        self.SPEED_BOX_Y_POS = self.COLOR_PICKER_Y_POS + self.RIGHT_BOX_HEIGHT
+
+        self.SPEED_RECT_COLOR = self.LEFT_RECT_COLOR
+        self.SPEED_RECT_COLOR_PICKED = self.LEFT_RECT_COLOR_PICKED
+
+        self.SPEED_BOX = TextBox(self.SPEED_BOX_X_POS, self.SPEED_BOX_Y_POS, self.SPEED_BOX_WIDTH, self.SPEED_BOX_HEIGHT, self.SPEED_RECT_COLOR, self.SPEED_RECT_COLOR_PICKED, self.Font.get_normal_font(smaller=3.0 / math.sqrt(self.sumProportion)), self.initialSpeed, BOX_ID.SPEED_BOX.value)
+
+
+        self.TEXT_BOXES = [self.NAME_BOX, self.LEFT_BOX, self.RIGHT_BOX, self.SPEED_BOX]
         
         self.whichPicked = BOX_ID.NAME_BOX.value
 
@@ -176,8 +192,21 @@ class LobbyPlayer:
 
                     for TEXT_BOX in self.TEXT_BOXES:
                         if self.whichPicked == TEXT_BOX.text_id:
+
                             if TEXT_BOX.text_id == BOX_ID.NAME_BOX.value:
                                 TEXT_BOX.popBackText()
+
+                            if TEXT_BOX.text_id == BOX_ID.SPEED_BOX.value:
+
+                                    if len(TEXT_BOX.text) == 1: continue
+
+                                    elif len(TEXT_BOX.text) == 2:
+                                        temp = list(TEXT_BOX.text)
+                                        temp.pop(0)
+                                        TEXT_BOX.text = ''.join(temp)
+
+                                    else:
+                                        TEXT_BOX.popBackText()
 
                 elif characterPressed.isalnum():
 
@@ -191,6 +220,16 @@ class LobbyPlayer:
                             if ( (TEXT_BOX.text_id == BOX_ID.LEFT_BOX.value and self.RIGHT_BOX.text != characterPressed.lower() and characterPressed.isalpha()) 
                             or (TEXT_BOX.text_id == BOX_ID.RIGHT_BOX.value and self.LEFT_BOX.text != characterPressed.lower() and characterPressed.isalpha()) ):
                                 TEXT_BOX.setText(characterPressed.lower())
+
+                            if TEXT_BOX.text_id == BOX_ID.SPEED_BOX.value and len(TEXT_BOX.text) < self.MAX_PRECISION and characterPressed.isnumeric():
+
+                                if TEXT_BOX.text[0] != '.':
+                                    TEXT_BOX.addToText(characterPressed)
+
+                                else:
+                                    temp = list(TEXT_BOX.text)
+                                    temp.insert(0, characterPressed)
+                                    TEXT_BOX.text = ''.join(temp)
                                 
 
         if event.type == pygame.MOUSEBUTTONDOWN:

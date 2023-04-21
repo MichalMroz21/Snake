@@ -77,9 +77,17 @@ class Lobby:
                         return
 
                     if self.PLAY_BUTTON.checkForInput(self.LOBBY_MOUSE_POS):
-                         game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.lobbyPlayers)
-                         game.play()
-                         return
+
+                        dontStart = False
+
+                        for lobbyPlayer in self.lobbyPlayers:
+                            if lobbyPlayer.SPEED_BOX.text == '.' or lobbyPlayer.SPEED_BOX.text == '0.': dontStart = True
+
+                        if dontStart == False:
+
+                             game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.lobbyPlayers)
+                             game.play()
+                             return
                         
                 if event.type == self.mixer.SONG_END:
                     self.mixer.playMenuMusic()

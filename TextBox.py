@@ -9,7 +9,7 @@ class TextBox():
         self.height = height
         self.color = color
         self.colorPicked = colorPicked
-        self.text = initialText
+        self.text = str(initialText)
         self.font = font
 
         self.text_id = id
@@ -46,4 +46,4 @@ class TextBox():
         self.text = self.text[:-1]
 
     def setText(self, text):
-        self.text = text
+        self.text = str(text)
