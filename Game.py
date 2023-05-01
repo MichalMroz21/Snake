@@ -7,7 +7,7 @@ from threading import Thread
 
 class Game:
 
-    def __init__(self, screen, screenWidth, screenHeight, FPS, mixer, menu, lobbyPlayers):
+    def __init__(self, screen, screenWidth, screenHeight, FPS, mixer, menu, lobbyPlayers, minimumAlivePlayers):
 
         self.screen = screen
         self.screenWidth = screenWidth
@@ -17,7 +17,7 @@ class Game:
         self.FPS = FPS
 
         self.menu = menu
-        self.MINIMUM_ALIVE_PLAYERS = 2
+        self.MINIMUM_ALIVE_PLAYERS = minimumAlivePlayers
 
         self.gameMixer = mixer
 
@@ -84,6 +84,8 @@ class Game:
 
                     self.gameMixer.pauseMusic()
                     self.gameMixer.selectRandomSong()
+
+                    self.gameMixer.playMenuMusic()
 
                     break       
 

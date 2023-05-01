@@ -118,7 +118,7 @@ class LobbyPlayer:
 
         self.RIGHT_BOX = TextBox(self.RIGHT_BOX_X_POS, self.RIGHT_BOX_Y_POS, self.RIGHT_BOX_WIDTH, self.RIGHT_BOX_HEIGHT, self.RIGHT_RECT_COLOR, self.RIGHT_RECT_COLOR_PICKED, self.nickFont, self.initialRight, BOX_ID.RIGHT_BOX.value)
 
-        self.RIGHT_TEXT_WIDTH, self.RIGHT_TEXT_HEIGHT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).size("<-")
+        self.RIGHT_TEXT_WIDTH, self.RIGHT_TEXT_HEIGHT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).size("->")
         self.RIGHT_TEXT = self.Font.get_normal_font(smaller=3.0 / self.sumProportion).render("->", True, "White")
         self.RIGHT_TEXT_RECT = self.RIGHT_TEXT.get_rect(center=(self.RIGHT_BOX_X_POS + self.RIGHT_BOX_WIDTH/2, self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT + (self.RIGHT_BOX_Y_POS - self.COLOR_PICKER_Y_POS - self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4)/2))
 

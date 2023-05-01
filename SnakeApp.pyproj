@@ -51,6 +51,9 @@
     <Compile Include="PlayerAnimator.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Round.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Slider.py" />
     <Compile Include="SnakeApp.py" />
     <Compile Include="TextBox.py">
