@@ -101,8 +101,8 @@ class Lobby:
 
                         if dontStart == False and addedPlayers >= self.minimumAlivePlayers:
 
-                             game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.lobbyPlayers, self.minimumAlivePlayers)
-                             game.play()
+                             game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.lobbyPlayers, self.minimumAlivePlayers, self.roundNumber)
+                             game.runGame()
                              return
 
                     if self.ROUND_BUTTON.checkForInput(self.LOBBY_MOUSE_POS):
