@@ -58,7 +58,7 @@ class Game:
     def initializeText(self):
 
         self.SCORES_TEXT = self.Font.get_title_font(smaller = 3 / self.sumProportion).render("Scores", True, "Yellow")
-        self.SCORES_RECT = self.SCORES_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.9))
+        self.SCORES_RECT = self.SCORES_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 5.0))
 
 
     def initializeChangableText(self):
@@ -71,8 +71,8 @@ class Game:
 
             self.SCORE_TEXT_WIDTH, self.SCORE_TEXT_HEIGHT = self.Font.get_normal_font(smaller=2.0 / self.sumProportion).size(scoreText)
 
-            self.SCORE_TEXT = self.Font.get_title_font(smaller=4 / self.sumProportion).render(scoreText, True, "White")
-            self.SCORE_RECT = self.SCORE_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.9 + self.SCORE_TEXT_HEIGHT * i))
+            self.SCORE_TEXT = self.Font.get_title_font(smaller=4 / self.sumProportion).render(scoreText, True, player.color)
+            self.SCORE_RECT = self.SCORE_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 5.0 + self.SCORE_TEXT_HEIGHT * i))
 
             self.scoreTexts.append((self.SCORE_TEXT, self.SCORE_RECT))
 
@@ -111,7 +111,10 @@ class Game:
             for player in self.gamePlayers:
                 self.scores[player.whichPlayer] = self.scores[player.whichPlayer] + len(self.gamePlayers) * 10
 
-            deathPenalty = 10 
+            deathPenalty = 10
+            
+            if len(self.deathOrder) == len(self.gamePlayers):
+                self.deathOrder.pop()
 
             for death in self.deathOrder:
                 self.scores[death] = self.scores[death] - deathPenalty
@@ -123,7 +126,7 @@ class Game:
 
 
 
-            if(self.currentRound == self.rounds):
+            if(self.currentRound == self.rounds + 1):
             
                 self.gameMixer.pauseMusic()
                 self.gameMixer.selectRandomSong()

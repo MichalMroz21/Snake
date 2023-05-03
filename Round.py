@@ -29,7 +29,7 @@ class Round:
 
         for player in lobbyPlayers:
             if player.isAdded:
-                self.players.append(Player(player.colorPicker.get_color(), self.screenWidth, self.screenHeight, player.LEFT_BOX.text, player.RIGHT_BOX.text, self.gameBackgroundColor, self.screen, self.FPS, float(player.SPEED_BOX.text), player.thickness, player.name, player.whichPlayer))
+                self.players.append(Player(player.color, self.screenWidth, self.screenHeight, player.left, player.right, self.gameBackgroundColor, self.screen, self.FPS, player.speed, player.thickness, player.name, player.whichPlayer))
 
 
         self.fillBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)] 

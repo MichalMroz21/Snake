@@ -29,7 +29,8 @@ class LobbyPlayer:
 
         if whichPlayer > 4: return
 
-        self.DefaultColor = "Red"
+        self.defaultColor = "Red"
+        self.color = self.defaultColor
 
         self.defaultThickness = 5
 
@@ -37,6 +38,7 @@ class LobbyPlayer:
         self.MAX_PRECISION = 4
 
         self.maxThickness = self.defaultThickness
+        self.speed = str(self.initialSpeed)
 
         self.thickness = self.defaultThickness
 
@@ -89,6 +91,9 @@ class LobbyPlayer:
 
         self.initialLeft = self.defaultLeft
         self.initialRight = self.defaultRight
+
+        self.left = self.initialLeft
+        self.right = self.initialRight
 
         self.LEFT_BOX_WIDTH = ( self.maxNameLength / 2 + self.maxNameLength / 5 ) * self.nickFontSize / 4
         self.LEFT_BOX_HEIGHT = self.nickFontSize 
@@ -151,6 +156,7 @@ class LobbyPlayer:
             TEXT_BOX.update()
 
         self.colorPicker.update(menu_mouse_pos, menu_mouse_buttons)
+        self.color = self.colorPicker.get_color()
 
         if(self.isAdded == False):
 
@@ -235,7 +241,10 @@ class LobbyPlayer:
                                     temp.insert(0, characterPressed)
                                     TEXT_BOX.text = ''.join(temp)
 
+
         self.name = self.NAME_BOX.text
+        self.left, self.right = self.LEFT_BOX.text, self.RIGHT_BOX.text
+        self.speed = self.SPEED_BOX.text
                                 
 
         if event.type == pygame.MOUSEBUTTONDOWN:
