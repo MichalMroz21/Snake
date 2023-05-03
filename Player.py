@@ -16,7 +16,7 @@ class Player:
         self.screen = screen
 
         self.thickness = thickness #max 20, small optimization problems for more, collision problems for more, default: 5
-        self.spawnMargin = (self.screenWidth + self.screenHeight) / 10
+        self.spawnMargin = int((self.screenWidth + self.screenHeight) / 10)
 
         self.FPS = FPS
         self.name = name

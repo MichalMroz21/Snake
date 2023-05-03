@@ -4,6 +4,7 @@ import pygame
 import pygame, sys
 import time 
 import math
+import operator
 from threading import Thread
 
 class Game:
@@ -26,6 +27,12 @@ class Game:
         self.deathOrder = []
 
         self.gamePlayers = gamePlayers
+        
+        self.idToPlayer = {}
+
+        for player in self.gamePlayers:
+            self.idToPlayer[player.whichPlayer] = player
+
         self.players = []
 
         self.rounds = (int)(rounds)
@@ -35,6 +42,8 @@ class Game:
 
         self.scores = {}
         self.scoreTexts = []
+
+        self.scoreProfits = {}
 
         self.sumProportion = (self.screenWidth + self.screenHeight) / 1000
 
@@ -65,16 +74,28 @@ class Game:
 
         self.scoreTexts.clear()
 
-        for i, player in enumerate(self.gamePlayers, 1):
+        i = 1.5
 
-            scoreText = player.name + " " + str(self.scores[player.whichPlayer])
+        for key, value in self.scores.items():
 
-            self.SCORE_TEXT_WIDTH, self.SCORE_TEXT_HEIGHT = self.Font.get_normal_font(smaller=2.0 / self.sumProportion).size(scoreText)
+            scoreText = self.idToPlayer[key].name + " " + str(value)
+            profitText = "+ " + str(self.scoreProfits[key]) 
 
-            self.SCORE_TEXT = self.Font.get_title_font(smaller=4 / self.sumProportion).render(scoreText, True, player.color)
+            self.SCORE_TEXT_WIDTH, self.SCORE_TEXT_HEIGHT = self.Font.get_title_font(smaller=4.0 / self.sumProportion).size(scoreText)
+
+            self.SCORE_TEXT = self.Font.get_title_font(smaller=4 / self.sumProportion).render(scoreText, True, self.idToPlayer[key].color)
             self.SCORE_RECT = self.SCORE_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 5.0 + self.SCORE_TEXT_HEIGHT * i))
 
             self.scoreTexts.append((self.SCORE_TEXT, self.SCORE_RECT))
+
+            self.PROFIT_TEXT_WIDTH, self.PROFIT_TEXT_HEIGHT = self.Font.get_normal_font(smaller=8.0 / self.sumProportion).size(profitText)
+
+            self.PROFIT_TEXT = self.Font.get_title_font(smaller= 8 / self.sumProportion).render(profitText, True, self.idToPlayer[key].color)
+            self.PROFIT_RECT = self.PROFIT_TEXT.get_rect(center=(self.screenWidth / 2 + self.SCORE_TEXT_WIDTH / 2 + self.PROFIT_TEXT_WIDTH, self.screenHeight / 5.0 + self.SCORE_TEXT_HEIGHT * i))
+
+            self.scoreTexts.append((self.PROFIT_TEXT, self.PROFIT_RECT))
+
+            i += 1.5
 
 
     def displayScores(self):
@@ -110,6 +131,7 @@ class Game:
 
             for player in self.gamePlayers:
                 self.scores[player.whichPlayer] = self.scores[player.whichPlayer] + len(self.gamePlayers) * 10
+                self.scoreProfits[player.whichPlayer] = len(self.gamePlayers) * 10
 
             deathPenalty = 10
             
@@ -118,8 +140,10 @@ class Game:
 
             for death in self.deathOrder:
                 self.scores[death] = self.scores[death] - deathPenalty
+                self.scoreProfits[death] -= deathPenalty
                 deathPenalty += 10
 
+            self.scores = dict(sorted(self.scores.items(), key=operator.itemgetter(1), reverse=True))
             self.displayScores()
 
             self.currentRound += 1
