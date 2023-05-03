@@ -94,14 +94,17 @@ class Lobby:
 
                         dontStart = False
                         addedPlayers = 0
+                        gamePlayers = []
 
                         for lobbyPlayer in self.lobbyPlayers:
                             if lobbyPlayer.SPEED_BOX.text == '.' or lobbyPlayer.SPEED_BOX.text == '0.': dontStart = True
-                            if lobbyPlayer.isAdded: addedPlayers += 1
+                            if lobbyPlayer.isAdded: 
+                                addedPlayers += 1
+                                gamePlayers.append(lobbyPlayer)
 
                         if dontStart == False and addedPlayers >= self.minimumAlivePlayers:
 
-                             game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.lobbyPlayers, self.minimumAlivePlayers, self.roundNumber)
+                             game = Game(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, gamePlayers, self.minimumAlivePlayers, self.roundNumber, self.Font)
                              game.runGame()
                              return
 

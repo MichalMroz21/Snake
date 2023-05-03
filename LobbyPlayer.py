@@ -234,6 +234,8 @@ class LobbyPlayer:
                                     temp = list(TEXT_BOX.text)
                                     temp.insert(0, characterPressed)
                                     TEXT_BOX.text = ''.join(temp)
+
+        self.name = self.NAME_BOX.text
                                 
 
         if event.type == pygame.MOUSEBUTTONDOWN:

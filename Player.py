@@ -9,7 +9,7 @@ from PlayerAnimator import PlayerAnimator
 
 class Player:
 
-    def __init__(self, color, screenWidth, screenHeight, left, right, gameBackgroundColor, screen, FPS, speed, thickness, name):
+    def __init__(self, color, screenWidth, screenHeight, left, right, gameBackgroundColor, screen, FPS, speed, thickness, name, whichPlayer):
         
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
@@ -20,6 +20,8 @@ class Player:
 
         self.FPS = FPS
         self.name = name
+
+        self.id = whichPlayer
 
         self.pos_x = rand.randint(1 + self.spawnMargin, self.screenWidth - self.thickness - self.spawnMargin)
         self.pos_y = rand.randint(1 + self.spawnMargin, self.screenHeight - self.thickness - self.spawnMargin) #todo: make so players cant spawn on each other
@@ -164,7 +166,7 @@ class Player:
         self.previousHeadPositions.append(tempHeadPositions)
 
 
-    def movePlayerOnscreen(self, screen, screenWidth, screenHeight, boardFill, colorBoard, animateThread, mixer):
+    def movePlayerOnscreen(self, screen, screenWidth, screenHeight, boardFill, colorBoard, animateThread, mixer, deathOrder):
 
         if self.isAlive:
 
@@ -225,6 +227,7 @@ class Player:
                     if (y >= screenHeight or y < 0 or x >= screenWidth or x < 0) or (boardFill[y][x] == 1 and not self.previousHeadPositionsMap[y][x]):
 
                         self.isAlive = False
+                        deathOrder.append(self.id)
                         deathThread = Thread(target = self.death, args = (boardFill, colorBoard, mixer))
                         animateThread.append(deathThread)
                         deathThread.start()
