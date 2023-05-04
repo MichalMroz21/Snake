@@ -216,7 +216,7 @@ class MainMenu:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.PLAY_BUTTON.checkForInput(self.MENU_MOUSE_POS):
 
-                      
+                       
                       lobby = Lobby(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self, self.Font)
                       lobby.displayLobby()
                         

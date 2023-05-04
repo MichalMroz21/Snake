@@ -7,7 +7,7 @@ from threading import Thread
 
 class Round:
 
-    def __init__(self, screen, screenWidth, screenHeight, mixer, lobbyPlayers, minimumAlivePlayers, FPS):
+    def __init__(self, screen, screenWidth, screenHeight, mixer, lobbyPlayers, minimumAlivePlayers, FPS, font):
 
         self.screen = screen
         self.screenWidth = screenWidth
@@ -15,6 +15,7 @@ class Round:
         self.gameBackgroundColor = "black" 
 
         self.deathOrder = []
+        self.Font = font
 
         self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -49,13 +50,47 @@ class Round:
                     self.gameMixer.switchMusicAndPlay()
 
 
-    def startRound(self):
+    def roundCountdown(self):
 
-        self.gameMixer.switchMusicAndPlay()
+        self.gameMixer.setMusicVolume(self.gameMixer.musicVolume / 2)
+        
+        countDownStart = 3
+        countDown = countDownStart
+
+        self.gameMixer.playSoundEffect(self.gameMixer.SoundBoard.countdown)
+
+        while True:
+
+            if countDown != countDownStart:
+                PREV_TEXT = self.Font.get_title_font(smaller=2).render(str(countDown + 1), True, self.gameBackgroundColor)
+                PREV_RECT = COUNT_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.9))
+
+                self.screen.blit(PREV_TEXT, PREV_RECT)
+
+                pygame.display.update()
+
+            if countDown == 0: break
+
+            COUNT_TEXT = self.Font.get_title_font(smaller=2).render(str(countDown), True, "White")
+            COUNT_RECT = COUNT_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.9))
+
+            self.screen.blit(COUNT_TEXT, COUNT_RECT)
+
+            pygame.display.update()
+
+            time.sleep(1)
+            countDown -= 1
+
+
+        self.gameMixer.setMusicVolume(self.gameMixer.musicVolume * 2)
+
+    def startRound(self):
 
         self.screen.fill(self.gameBackgroundColor)
 
         clock = pygame.time.Clock() 
+
+        roundStarted = False
         
         while True:
             
@@ -93,6 +128,11 @@ class Round:
                 i.handleInputForPlayer(input)
 
             self.dealWithGameEvents()
+
+            if roundStarted == False:
+
+                self.roundCountdown()
+                roundStarted = True
                         
             pygame.display.update()
             clock.tick(self.FPS)

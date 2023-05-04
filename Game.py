@@ -126,7 +126,7 @@ class Game:
             self.MENU_MOUSE_POS = pygame.mouse.get_pos()
             input = pygame.key.get_pressed() 
    
-            round = Round(self.screen, self.screenWidth, self.screenHeight, self.gameMixer, self.gamePlayers, self.MINIMUM_ALIVE_PLAYERS, self.FPS)
+            round = Round(self.screen, self.screenWidth, self.screenHeight, self.gameMixer, self.gamePlayers, self.MINIMUM_ALIVE_PLAYERS, self.FPS, self.Font)
             self.deathOrder = round.startRound()
 
             for player in self.gamePlayers:
