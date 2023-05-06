@@ -117,6 +117,54 @@ class Game:
         time.sleep(self.SCORES_DISPLAY_TIME)
 
 
+    def displayWinner(self):
+
+        for key, value in self.scores.items():
+                     self.winningPlayerID = key
+                     break
+            
+        self.winningPlayer = self.idToPlayer[self.winningPlayerID]
+
+        self.WINNER_PLAYER_TEXT = self.Font.get_title_font(smaller = 3 / self.sumProportion).render(self.winningPlayer.name, True, self.winningPlayer.color)
+        self.WINNER_PLAYER_RECT = self.WINNER_PLAYER_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.0))
+
+        self.gameMixer.pauseMusic()
+
+        self.screen.fill(self.gameBackgroundColor)
+
+        for winObject in [(self.WINNER_PLAYER_TEXT, self.WINNER_PLAYER_RECT), (self.WINNER_TEXT, self.WINNER_RECT)]:
+            self.screen.blit(winObject[0], winObject[1])
+
+        pygame.display.update()
+
+        self.gameMixer.playSoundEffect(self.gameMixer.SoundBoard.gameWin)
+
+        time.sleep(self.WINNER_DISPLAY_TIME)
+
+        self.gameMixer.selectRandomSong()
+
+        self.gameMixer.playMenuMusic()
+
+
+    def calculateScores(self):
+
+        for player in self.gamePlayers:
+                self.scores[player.whichPlayer] = self.scores[player.whichPlayer] + len(self.gamePlayers) * 10
+                self.scoreProfits[player.whichPlayer] = len(self.gamePlayers) * 10
+
+        deathPenalty = 10
+            
+        if len(self.deathOrder) == len(self.gamePlayers):
+            self.deathOrder.pop()
+
+        for death in reversed(self.deathOrder):
+            self.scores[death] = self.scores[death] - deathPenalty
+            self.scoreProfits[death] -= deathPenalty
+            deathPenalty += 10
+
+        self.scores = dict(sorted(self.scores.items(), key=operator.itemgetter(1), reverse=True))
+
+
     def runGame(self):
 
         self.gameMixer.switchMusicAndPlay()
@@ -133,55 +181,14 @@ class Game:
             round = Round(self.screen, self.screenWidth, self.screenHeight, self.gameMixer, self.gamePlayers, self.MINIMUM_ALIVE_PLAYERS, self.FPS, self.Font)
             self.deathOrder = round.startRound()
 
-            for player in self.gamePlayers:
-                self.scores[player.whichPlayer] = self.scores[player.whichPlayer] + len(self.gamePlayers) * 10
-                self.scoreProfits[player.whichPlayer] = len(self.gamePlayers) * 10
-
-            deathPenalty = 10
-            
-            if len(self.deathOrder) == len(self.gamePlayers):
-                self.deathOrder.pop()
-
-            for death in reversed(self.deathOrder):
-                self.scores[death] = self.scores[death] - deathPenalty
-                self.scoreProfits[death] -= deathPenalty
-                deathPenalty += 10
-
-            self.scores = dict(sorted(self.scores.items(), key=operator.itemgetter(1), reverse=True))
+            self.calculateScores()
             self.displayScores()
 
             self.currentRound += 1
 
-
-
             if(self.currentRound == self.rounds + 1):
 
-                for key, value in self.scores.items():
-                     self.winningPlayerID = key
-                     break
-            
-                self.winningPlayer = self.idToPlayer[self.winningPlayerID]
-
-                self.WINNER_PLAYER_TEXT = self.Font.get_title_font(smaller = 3 / self.sumProportion).render(self.winningPlayer.name, True, self.winningPlayer.color)
-                self.WINNER_PLAYER_RECT = self.WINNER_PLAYER_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.0))
-
-                self.gameMixer.pauseMusic()
-
-                self.screen.fill(self.gameBackgroundColor)
-
-                for winObject in [(self.WINNER_PLAYER_TEXT, self.WINNER_PLAYER_RECT), (self.WINNER_TEXT, self.WINNER_RECT)]:
-                    self.screen.blit(winObject[0], winObject[1])
-
-                pygame.display.update()
-
-                self.gameMixer.playSoundEffect(self.gameMixer.SoundBoard.gameWin)
-
-                time.sleep(self.WINNER_DISPLAY_TIME)
-
-                self.gameMixer.selectRandomSong()
-
-                self.gameMixer.playMenuMusic()
-
+                self.displayWinner()
                 break
 
             self.dealWithGameEvents()
