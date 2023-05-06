@@ -61,24 +61,25 @@ class Round:
 
         while True:
 
-            if countDown != countDownStart:
-                PREV_TEXT = self.Font.get_title_font(smaller=2).render(str(countDown + 1), True, self.gameBackgroundColor)
-                PREV_RECT = COUNT_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.9))
-
-                self.screen.blit(PREV_TEXT, PREV_RECT)
-
-                pygame.display.update()
-
             if countDown == 0: break
 
-            COUNT_TEXT = self.Font.get_title_font(smaller=2).render(str(countDown), True, "White")
-            COUNT_RECT = COUNT_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.9))
+
+            COUNT_TEXT = self.Font.get_title_font(smaller=2.0).render(str(countDown), True, "White")
+            COUNT_RECT = COUNT_TEXT.get_rect(center=(self.screenWidth / 2.0, self.screenHeight / 4.0))
+
+            COUNT_TEXT_WIDTH, COUNT_TEXT_HEIGHT = self.Font.get_title_font(smaller=2.0).size(str(countDown))
 
             self.screen.blit(COUNT_TEXT, COUNT_RECT)
 
             pygame.display.update()
 
             time.sleep(1)
+
+            #drawing the same number but in black won't work, so rectangle has to be drawn
+            pygame.draw.rect(self.screen, self.gameBackgroundColor, pygame.Rect(self.screenWidth / 2.0 - COUNT_TEXT_WIDTH / 2, self.screenHeight / 4.0 - COUNT_TEXT_HEIGHT / 2, COUNT_TEXT_WIDTH, COUNT_TEXT_HEIGHT))
+
+            pygame.display.update()
+
             countDown -= 1
 
 

@@ -13,12 +13,12 @@ class Font:
         self.font = "assets/font/Lato-Regular.ttf"
 
 
-    def get_title_font(self, smaller = 1, higher = 1): 
-        return pygame.font.Font(self.font, round(self.titleFontSize/smaller * higher))
+    def get_title_font(self, smaller = 1, higher = 1, bold = False, italic = False): 
+        return pygame.font.Font(self.font, round(self.titleFontSize/smaller * higher), bold=bold, italic=italic)
 
 
-    def get_normal_font(self, smaller = 1, higher = 1):
-        return pygame.font.Font(self.font, round(self.normalTextFontSize/smaller * higher))
+    def get_normal_font(self, smaller = 1, higher = 1, bold = False, italic = False):
+        return pygame.font.Font(self.font, round(self.normalTextFontSize/smaller * higher), bold=bold, italic=italic)
 
 
     def updateFontSizes(self, screenWidth, screenHeight):

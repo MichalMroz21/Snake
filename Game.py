@@ -39,6 +39,7 @@ class Game:
         self.currentRound = 1
 
         self.SCORES_DISPLAY_TIME = 5.0
+        self.WINNER_DISPLAY_TIME = 6.0
 
         self.scores = {}
         self.scoreTexts = []
@@ -68,6 +69,9 @@ class Game:
 
         self.SCORES_TEXT = self.Font.get_title_font(smaller = 3 / self.sumProportion).render("Scores", True, "Yellow")
         self.SCORES_RECT = self.SCORES_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 5.0))
+
+        self.WINNER_TEXT = self.Font.get_title_font(smaller = 3 / self.sumProportion).render("Winner", True, "Gold")
+        self.WINNER_RECT = self.WINNER_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 5.0))
 
 
     def initializeChangableText(self):
@@ -138,7 +142,7 @@ class Game:
             if len(self.deathOrder) == len(self.gamePlayers):
                 self.deathOrder.pop()
 
-            for death in self.deathOrder:
+            for death in reversed(self.deathOrder):
                 self.scores[death] = self.scores[death] - deathPenalty
                 self.scoreProfits[death] -= deathPenalty
                 deathPenalty += 10
@@ -151,8 +155,29 @@ class Game:
 
 
             if(self.currentRound == self.rounds + 1):
+
+                for key, value in self.scores.items():
+                     self.winningPlayerID = key
+                     break
             
+                self.winningPlayer = self.idToPlayer[self.winningPlayerID]
+
+                self.WINNER_PLAYER_TEXT = self.Font.get_title_font(smaller = 3 / self.sumProportion).render(self.winningPlayer.name, True, self.winningPlayer.color)
+                self.WINNER_PLAYER_RECT = self.WINNER_PLAYER_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 3.0))
+
                 self.gameMixer.pauseMusic()
+
+                self.screen.fill(self.gameBackgroundColor)
+
+                for winObject in [(self.WINNER_PLAYER_TEXT, self.WINNER_PLAYER_RECT), (self.WINNER_TEXT, self.WINNER_RECT)]:
+                    self.screen.blit(winObject[0], winObject[1])
+
+                pygame.display.update()
+
+                self.gameMixer.playSoundEffect(self.gameMixer.SoundBoard.gameWin)
+
+                time.sleep(self.WINNER_DISPLAY_TIME)
+
                 self.gameMixer.selectRandomSong()
 
                 self.gameMixer.playMenuMusic()

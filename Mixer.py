@@ -8,6 +8,7 @@ class Mixer:
     class SoundBoard(enum.Enum):
         death = 0
         countdown = 1
+        gameWin = 2
 
     def __init__(self, initialVolume):
 
@@ -22,7 +23,8 @@ class Mixer:
                                "assets/music/ES_Twenty Five - Dylan Sitts.mp3"]
 
         self.soundEffects = ["assets/sounds/417486__mentoslat__8-bit-death-sound.wav",
-                             "assets/sounds/546602__nxrt__arcade-countdown.wav"]
+                             "assets/sounds/546602__nxrt__arcade-countdown.wav",
+                             "assets/sounds/258142__tuudurt__level-win.wav"]
 
         self.musicVolume = initialVolume
         self.soundVolume = initialVolume
