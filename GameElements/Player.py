@@ -12,22 +12,22 @@ class Player:
     def __init__(self, color, screen_width, screen_height, left, right, game_background_color, screen, fps, speed,
                  thickness, name, which_player):
 
-        self.screenWidth = screen_width
-        self.screenHeight = screen_height
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         self.screen = screen
 
         # max 20, small optimization problems for more, collision problems for more, default: 5
         self.thickness = thickness
-        self.spawnMargin = int((self.screenWidth + self.screenHeight) / 10)
+        self.spawnMargin = int((self.screen_width + self.screen_height) / 10)
 
-        self.FPS = fps
+        self.fps = fps
         self.name = name
 
         self.id = which_player
 
-        self.pos_x = rand.randint(1 + self.spawnMargin, self.screenWidth - self.thickness - self.spawnMargin)
+        self.pos_x = rand.randint(1 + self.spawnMargin, self.screen_width - self.thickness - self.spawnMargin)
         # todo: make so players cant spawn on each other
-        self.pos_y = rand.randint(1 + self.spawnMargin, self.screenHeight - self.thickness - self.spawnMargin)
+        self.pos_y = rand.randint(1 + self.spawnMargin, self.screen_height - self.thickness - self.spawnMargin)
 
         self.firstSquareClear = True
         self.saveFirstRectangle = []
@@ -46,7 +46,7 @@ class Player:
         # default: 1.75 no max test for speed
         self.speed = speed
         self.color = color
-        self.gameBackgroundColor = game_background_color
+        self.game_background_color = game_background_color
         self.previousPosition = []
 
         self.left = left
@@ -181,10 +181,10 @@ class Player:
                         y = self.previousPosition[1] + b
                         x = self.previousPosition[0] + a
 
-                        pygame.draw.rect(screen, self.gameBackgroundColor, pygame.Rect(x, y, 1, 1))
+                        pygame.draw.rect(screen, self.game_background_color, pygame.Rect(x, y, 1, 1))
 
                         board_fill[round(y)][round(x)] = 0
-                        color_board[(round(y))][round(x)] = self.gameBackgroundColor
+                        color_board[(round(y))][round(x)] = self.game_background_color
 
                 if self.firstSquareClear:
                     self.saveFirstRectangle = [self.previousPosition[0], self.previousPosition[1],
