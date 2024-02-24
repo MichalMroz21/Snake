@@ -1,5 +1,4 @@
-import pygame, sys
-from MainMenu import MainMenu
+from GameElements.MainMenu import MainMenu
 
 menu = MainMenu()
- 
+
