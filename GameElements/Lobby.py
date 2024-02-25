@@ -9,12 +9,9 @@ from GameElements.Game import Game
 class Lobby:
 
     def __init__(self, screen, screen_width, screen_height, fps, mixer, menu, font):
-        self.ROUND_TEXT = None
-        self.ROUND_RECT = None
-        self.ROUND_BUTTON = None
-        self.BACK_BUTTON = None
-        self.PLAY_BUTTON = None
-        self.LOBBY_MOUSE_BUTTONS = None
+        self.ROUND_TEXT = self.ROUND_RECT =\
+            self.ROUND_BUTTON = self.BACK_BUTTON = self.PLAY_BUTTON =\
+            self.LOBBY_MOUSE_BUTTONS = None
 
         self.screen = screen
         self.screenWidth = screen_width
