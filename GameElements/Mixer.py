@@ -3,6 +3,8 @@ import pygame
 import random
 import enum
 
+from Utils.AssetManager import AssetManager
+
 
 class Mixer:
     class SoundBoard(enum.Enum):
@@ -13,20 +15,19 @@ class Mixer:
     def __init__(self, initial_volume):
         mixer.init()
 
-        self.menuMusic = "assets/music/ES_Loopty Loops (Instrumental Version) - Pandaraps.mp3"
+        self.menuMusic = AssetManager.Music.PANDARAPS.value
 
-        self.musicPlaylist = ["assets/music/ES_Disco Craze - Rymdklang Soundtracks.mp3",
-                              "assets/music/ES_Doozy - _91nova.mp3",
-                              "assets/music/ES_Leaving Lunar - Sum Wave.mp3",
-                              "assets/music/ES_MANNERS (Instrumental Version) - Zorro.mp3",
-                              "assets/music/ES_Twenty Five - Dylan Sitts.mp3"]
+        self.musicPlaylist = [AssetManager.Music.DISCO_CRAZE.value,
+                              AssetManager.Music.NOVA.value,
+                              AssetManager.Music.SUN_WAVE.value,
+                              AssetManager.Music.ZORRO.value,
+                              AssetManager.Music.DYLAN.value]
 
-        self.soundEffects = ["assets/sounds/417486__mentoslat__8-bit-death-sound.wav",
-                             "assets/sounds/546602__nxrt__arcade-countdown.wav",
-                             "assets/sounds/258142__tuudurt__level-win.wav"]
+        self.soundEffects = [AssetManager.Sounds.DEATH.value,
+                             AssetManager.Sounds.COUNTDOWN.value,
+                             AssetManager.Sounds.LEVEL_WIN.value]
 
-        self.musicVolume = initial_volume
-        self.soundVolume = initial_volume
+        self.musicVolume = self.soundVolume = initial_volume
 
         self.set_music_volume(self.musicVolume)
         self.set_sound_volume(self.soundVolume)

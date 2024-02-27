@@ -3,6 +3,8 @@ from GameElements.Mixer import Mixer
 from GuiElements.Slider import Slider
 from GameElements.Lobby import Lobby
 
+from Utils.AssetManager import AssetManager
+
 from GuiElements.Font import Font
 
 import pygame
@@ -14,34 +16,29 @@ import re
 
 class MainMenu:
 
+    GAME_TITLE = "Snake Game"
+    TEXT_COLOR = "White"
+    TEXT_COLOR_HOVER = "Red"
+    GAME_TITLE_COLOR = "Yellow"
+    INITIAL_VOLUME = 0.5
+    FPS = 60
+    RESOLUTIONS = [(640, 480), (800, 600), (1024, 768), (1280, 800), (1440, 900), (1680, 1050), (1920, 1200),
+                   (1280, 720), (1366, 768), (1920, 1080), (2560, 1440)]
+
     def __init__(self):
 
-        self.OPTIONS_APPLY = None
-        self.OPTIONS_RESOLUTION = None
-        self.OPTIONS_RECT_RESOLUTION = None
-        self.OPTIONS_TEXT_RESOLUTION = None
-        self.OPTIONS_RECT = None
-        self.OPTIONS_BACK = None
-        self.OPTIONS_TEXT = None
-        self.QUIT_BUTTON = None
-        self.OPTIONS_BUTTON = None
-        self.PLAY_BUTTON = None
-        self.MENU_RECT = None
-        self.MENU_TEXT = None
-        self.Font = None
-        self.BG = None
-        self.screen = None
-        self.OPTIONS_TEXT_MUSIC = None
-        self.OPTIONS_RECT_MUSIC = None
-        self.OPTIONS_MUSIC_SLIDER = None
-        self.OPTIONS_TEXT_SOUND = None
-        self.OPTIONS_RECT_SOUND = None
-        self.OPTIONS_SOUND_SLIDER = None
-        self.MENU_MOUSE_POS = None
+        self.OPTIONS_APPLY = self.OPTIONS_RESOLUTION = self.OPTIONS_RECT_RESOLUTION \
+            = self.OPTIONS_TEXT_RESOLUTION = self.OPTIONS_RECT \
+            = self.OPTIONS_BACK = self.OPTIONS_TEXT = self.QUIT_BUTTON\
+            = self.OPTIONS_BUTTON = self.PLAY_BUTTON = self.MENU_RECT \
+            = self.MENU_TEXT = self.Font = self.BG = self.screen \
+            = self.OPTIONS_TEXT_MUSIC = self.OPTIONS_RECT_MUSIC \
+            = self.OPTIONS_MUSIC_SLIDER = self.OPTIONS_TEXT_SOUND \
+            = self.OPTIONS_RECT_SOUND = self.OPTIONS_SOUND_SLIDER \
+            = self.MENU_MOUSE_POS = None
 
         pygame.init()
 
-        self.GAME_TITLE = "Snake Game"
         self.maxResolutionObject = pygame.display.Info()
 
         self.maxResolutionWidth = self.maxResolutionObject.current_w
@@ -50,19 +47,12 @@ class MainMenu:
         self.screenWidth = self.maxResolutionWidth
         self.screenHeight = self.maxResolutionHeight
 
-        self.initialVolume = 0.5
-        self.mixer = Mixer(self.initialVolume)
-
-        self.FPS = 60
-
+        self.mixer = Mixer(MainMenu.INITIAL_VOLUME)
         self.RESOLUTIONS_INDEX = {}
-
-        self.RESOLUTIONS = [(640, 480), (800, 600), (1024, 768), (1280, 800), (1440, 900), (1680, 1050), (1920, 1200),
-                            (1280, 720), (1366, 768), (1920, 1080), (2560, 1440)]
 
         i = 0
 
-        for resolution in self.RESOLUTIONS:
+        for resolution in MainMenu.RESOLUTIONS:
             if resolution[0] <= self.maxResolutionWidth and resolution[1] <= self.maxResolutionHeight:
                 self.RESOLUTIONS_INDEX[str(resolution[0]) + "x" + str(resolution[1])] = i
                 i += 1
@@ -91,56 +81,64 @@ class MainMenu:
         pygame.display.init()
 
         self.screen = pygame.display.set_mode((self.screenWidth, self.screenHeight))
+        self.MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        pygame.display.set_caption(self.GAME_TITLE)
+        pygame.display.set_caption(MainMenu.GAME_TITLE)
 
-        self.BG = pygame.image.load("assets/picture/MenuBackground.jpg")
+        self.BG = pygame.image.load(AssetManager.Pictures.MENU_BACKGROUND.value)
         self.BG = pygame.transform.scale(self.BG, (self.screenWidth, self.screenHeight))
 
         self.Font = Font(self.screenWidth, self.screenHeight)
 
-        self.MENU_TEXT = self.Font.get_title_font().render(self.GAME_TITLE, True, "Yellow")
+        self.MENU_TEXT = self.Font.get_title_font().render(MainMenu.GAME_TITLE, True, MainMenu.GAME_TITLE_COLOR)
         self.MENU_RECT = self.MENU_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 7.2))
 
-        self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.8), text_input="PLAY",
-                                  font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
-
-        self.OPTIONS_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.8),
-                                     text_input="OPTIONS",
-                                     font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
-
-        self.QUIT_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.3), text_input="QUIT",
-                                  font=self.Font.get_normal_font(), base_color="White", hovering_color="Red")
-
-        self.MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-        self.OPTIONS_TEXT = self.Font.get_title_font().render("Options", True, "Yellow")
+        self.OPTIONS_TEXT = self.Font.get_title_font().render("Options", True, MainMenu.GAME_TITLE_COLOR)
         self.OPTIONS_RECT = self.OPTIONS_TEXT.get_rect(center=(self.screenWidth / 2, self.screenHeight / 8.5))
 
-        self.OPTIONS_BACK = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.1),
-                                   text_input="GO BACK",
-                                   font=self.Font.get_normal_font(smaller=2), base_color="White", hovering_color="Red")
-
-        self.OPTIONS_TEXT_RESOLUTION = self.Font.get_normal_font(1.5).render("Resolution", True, "White")
+        self.OPTIONS_TEXT_RESOLUTION = self.Font.get_normal_font(1.5).render("Resolution", True, MainMenu.TEXT_COLOR)
         self.OPTIONS_RECT_RESOLUTION = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2,
                                                                                      self.screenHeight / 4.0))
 
+        self.OPTIONS_TEXT_MUSIC = self.Font.get_normal_font(smaller=2).render("Music Volume", True, MainMenu.TEXT_COLOR)
+        self.OPTIONS_RECT_MUSIC = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2.0,
+                                                                                self.screenHeight / 1.9))
+
+        self.OPTIONS_TEXT_SOUND = self.Font.get_normal_font(smaller=2).render("Effects Volume", True,
+                                                                              MainMenu.TEXT_COLOR)
+        self.OPTIONS_RECT_SOUND = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2.0,
+                                                                                self.screenHeight / 1.4))
+
+        self.PLAY_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.8), text_input="PLAY",
+                                  font=self.Font.get_normal_font(), base_color=MainMenu.TEXT_COLOR,
+                                  hovering_color=MainMenu.TEXT_COLOR_HOVER)
+
+        self.OPTIONS_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.8),
+                                     text_input="OPTIONS",
+                                     font=self.Font.get_normal_font(), base_color=MainMenu.TEXT_COLOR,
+                                     hovering_color=MainMenu.TEXT_COLOR_HOVER)
+
+        self.QUIT_BUTTON = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.3), text_input="QUIT",
+                                  font=self.Font.get_normal_font(), base_color=MainMenu.TEXT_COLOR,
+                                  hovering_color=MainMenu.TEXT_COLOR_HOVER)
+
+        self.OPTIONS_BACK = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 1.1),
+                                   text_input="GO BACK",
+                                   font=self.Font.get_normal_font(smaller=2), base_color=MainMenu.TEXT_COLOR,
+                                   hovering_color=MainMenu.TEXT_COLOR_HOVER)
+
         self.OPTIONS_RESOLUTION = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 3.0),
                                          text_input=(str(self.screenWidth) + "x" + str(self.screenHeight)),
-                                         font=self.Font.get_normal_font(smaller=2), base_color="White",
-                                         hovering_color="Red")
+                                         font=self.Font.get_normal_font(smaller=2), base_color=MainMenu.TEXT_COLOR,
+                                         hovering_color=MainMenu.TEXT_COLOR_HOVER)
 
         self.OPTIONS_APPLY = Button(image=None, pos=(self.screenWidth / 2, self.screenHeight / 2.5),
                                     text_input="APPLY",
-                                    font=self.Font.get_normal_font(smaller=2), base_color="White",
-                                    hovering_color="Red")
+                                    font=self.Font.get_normal_font(smaller=2), base_color=MainMenu.TEXT_COLOR,
+                                    hovering_color=MainMenu.TEXT_COLOR_HOVER)
 
         slider_width = self.screenWidth / 3
         slider_height = self.screenHeight / 20
-
-        self.OPTIONS_TEXT_MUSIC = self.Font.get_normal_font(smaller=2).render("Music Volume", True, "White")
-        self.OPTIONS_RECT_MUSIC = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2.0,
-                                                                                self.screenHeight / 1.9))
 
         if self.OPTIONS_MUSIC_SLIDER is not None:
             self.OPTIONS_MUSIC_SLIDER = Slider(self.screenWidth / 2 - slider_width / 2, self.screenHeight / 1.7,
@@ -150,10 +148,6 @@ class MainMenu:
             self.OPTIONS_MUSIC_SLIDER = Slider(self.screenWidth / 2 - slider_width / 2, self.screenHeight / 1.7,
                                                slider_width, slider_height, (200, 200, 200), (255, 30, 30), 1, 0, 1,
                                                slider_height, 0.5)
-
-        self.OPTIONS_TEXT_SOUND = self.Font.get_normal_font(smaller=2).render("Effects Volume", True, "White")
-        self.OPTIONS_RECT_SOUND = self.OPTIONS_TEXT_RESOLUTION.get_rect(center=(self.screenWidth / 2.0,
-                                                                                self.screenHeight / 1.4))
 
         if self.OPTIONS_SOUND_SLIDER is not None:
             self.OPTIONS_SOUND_SLIDER = Slider(self.screenWidth / 2 - slider_width / 2, self.screenHeight / 1.3,
@@ -256,7 +250,7 @@ class MainMenu:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.PLAY_BUTTON.check_for_input(self.MENU_MOUSE_POS):
-                        lobby = Lobby(self.screen, self.screenWidth, self.screenHeight, self.FPS, self.mixer, self,
+                        lobby = Lobby(self.screen, self.screenWidth, self.screenHeight, MainMenu.FPS, self.mixer, self,
                                       self.Font)
                         lobby.display_lobby()
 

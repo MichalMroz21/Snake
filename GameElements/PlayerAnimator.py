@@ -5,6 +5,8 @@ import math
 
 class PlayerAnimator:
 
+    MAX_TRANSPARENCY = 255
+
     def __init__(self, player):
         self.player = player
 
@@ -23,8 +25,6 @@ class PlayerAnimator:
         player_speed = self.player.speed
         fps = self.player.fps
 
-        max_transparency = 255
-
         particles_amount = rand.randint(particle_amount_min, particle_amount_max)
         particles_alphas = []
         particles_sizes = []
@@ -40,7 +40,7 @@ class PlayerAnimator:
             particles_alphas.append(rand.randint(0 + round(previous_alpha/2), 360))
             particles_sizes.append(rand.randint(round(thickness / 2), round(thickness / 1.5)))
 
-            particles_transparency.append(rand.uniform(max_transparency / 2, max_transparency))
+            particles_transparency.append(rand.uniform(PlayerAnimator.MAX_TRANSPARENCY / 2, PlayerAnimator.MAX_TRANSPARENCY))
             particles_max_radiuses.append(rand.uniform(base_radius, base_radius * 1.75))
             particles_velocities.append(rand.uniform(player_speed/2, player_speed * 1.5))
 

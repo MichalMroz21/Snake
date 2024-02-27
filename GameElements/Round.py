@@ -2,15 +2,17 @@ from GameElements.Player import Player
 import pygame, sys
 import time
 from threading import Thread
+from GameElements.Mixer import Mixer
 
 
 class Round:
+
+    GAME_BACKGROUND_COLOR = "black"
 
     def __init__(self, screen, screen_width, screen_height, mixer, lobby_players, minimum_alive_players, fps, font):
         self.screen = screen
         self.screenWidth = screen_width
         self.screenHeight = screen_height
-        self.gameBackgroundColor = "black"
 
         self.deathOrder = []
         self.Font = font
@@ -29,7 +31,7 @@ class Round:
         for player in lobby_players:
             if player.isAdded:
                 self.players.append(Player(player.color, self.screenWidth, self.screenHeight, player.left, player.right,
-                                           self.gameBackgroundColor, self.screen, self.FPS, player.speed,
+                                           Round.GAME_BACKGROUND_COLOR, self.screen, self.FPS, player.speed,
                                            player.thickness, player.name, player.whichPlayer))
 
         self.fillBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)]
@@ -70,7 +72,7 @@ class Round:
             time.sleep(1)
 
             # drawing the same number but in black won't work, so rectangle has to be drawn
-            pygame.draw.rect(self.screen, self.gameBackgroundColor,
+            pygame.draw.rect(self.screen, Round.GAME_BACKGROUND_COLOR,
                              pygame.Rect(self.screenWidth / 2.0 - count_text_width / 2,
                                          self.screenHeight / 4.0 - count_text_height / 2,
                                          count_text_width,
@@ -83,7 +85,7 @@ class Round:
         self.gameMixer.set_music_volume(self.gameMixer.musicVolume * 2)
 
     def start_round(self):
-        self.screen.fill(self.gameBackgroundColor)
+        self.screen.fill(Round.GAME_BACKGROUND_COLOR)
 
         clock = pygame.time.Clock()
         round_started = False

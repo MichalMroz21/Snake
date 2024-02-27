@@ -8,6 +8,9 @@ from GameElements.PlayerAnimator import PlayerAnimator
 
 
 class Player:
+    # should work for 90, default: 3, max 90 test for others
+    ALPHA_CHANGE = 3
+    STEER_STRENGTH = 1
 
     def __init__(self, color, screen_width, screen_height, left, right, game_background_color, screen, fps, speed,
                  thickness, name, which_player):
@@ -38,10 +41,6 @@ class Player:
         self.rangeMax = 200
 
         self.alpha = rand.randint(1, 4) * 90
-        # should work for 90, default: 3, max 90 test for others
-        self.alphaChange = 3
-        # this is prob not needed, so can be left at 1
-        self.steerStrength = 1
 
         # default: 1.75 no max test for speed
         self.speed = speed
@@ -63,7 +62,7 @@ class Player:
         self.animator = PlayerAnimator(self)
 
     def update_previous_head_positions_max_size(self):
-        alpha = self.alphaChange % 90 if self.alphaChange != 90 else 90
+        alpha = Player.ALPHA_CHANGE % 90 if Player.ALPHA_CHANGE != 90 else 90
 
         # how many rectangles to consider as previous in collision
         self.previousHeadPositionsMaxSize = self.thickness * math.sqrt(2) * math.cos(math.radians(alpha)) + 1
@@ -75,8 +74,8 @@ class Player:
         return new_position
 
     def calc_new_head_position(self):
-        new_position = [self.pos_x + self.speed * self.steerStrength * math.cos(math.radians(self.alpha)),
-                        self.pos_y + self.speed * self.steerStrength * math.sin(math.radians(self.alpha))]
+        new_position = [self.pos_x + self.speed * Player.STEER_STRENGTH * math.cos(math.radians(self.alpha)),
+                        self.pos_y + self.speed * Player.STEER_STRENGTH * math.sin(math.radians(self.alpha))]
 
         return new_position
 
@@ -86,7 +85,8 @@ class Player:
 
     def update_pause(self):
         self.pause += 1
-        if self.pause >= self.rangeMax: self.pause = 0
+        if self.pause >= self.rangeMax:
+            self.pause = 0
 
     def check_if_creating_pass(self):
         return self.pause in range(self.rangeMax - self.range, self.rangeMax)
@@ -116,10 +116,10 @@ class Player:
         if self.isAlive:
 
             if player_input[ord(self.left)]:
-                self.alpha -= self.alphaChange
+                self.alpha -= Player.ALPHA_CHANGE
 
             elif player_input[ord(self.right)]:
-                self.alpha += self.alphaChange
+                self.alpha += Player.ALPHA_CHANGE
 
     def death(self, board_fill, color_board, mixer):
         mixer.play_sound_effect(mixer.SoundBoard.death)

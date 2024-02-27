@@ -15,8 +15,16 @@ class BoxId(enum.Enum):
 
 class LobbyPlayer:
 
+    MAX_NAME_LENGTH = 6
+    MAX_PRECISION = 4
+    DEFAULT_THICKNESS = 5
+    INITIAL_SPEED = 1.75
+    DEFAULT_COLOR = "Red"
+    DEFAULT_LEFT = 'a'
+    DEFAULT_RIGHT = 'd'
+
     # whichPlayer from 1. 1,2,3,4...
-    def __init__(self, screen, screen_width, screen_height, which_player, font):
+    def __init__(self, screen, screen_width, screen_height, which_player, font, max_players):
 
         self.screen = screen
         self.screenWidth = screen_width
@@ -28,22 +36,14 @@ class LobbyPlayer:
         self.halfHeight = self.screenHeight / 2
 
         self.name = ""
-        self.maxNameLength = 6
 
-        if which_player > 4: return
+        if which_player > max_players:
+            return
 
-        self.defaultColor = "Red"
-        self.color = self.defaultColor
-
-        self.defaultThickness = 5
-
-        self.initialSpeed = 1.75
-        self.MAX_PRECISION = 4
-
-        self.maxThickness = self.defaultThickness
-        self.speed = str(self.initialSpeed)
-
-        self.thickness = self.defaultThickness
+        self.color = LobbyPlayer.DEFAULT_COLOR
+        self.speed = str(LobbyPlayer.INITIAL_SPEED)
+        self.thickness = LobbyPlayer.DEFAULT_THICKNESS
+        self.maxThickness = LobbyPlayer.DEFAULT_THICKNESS
 
         self.whichPlayer = which_player
 
@@ -61,7 +61,7 @@ class LobbyPlayer:
         self.TEXT_MARGIN_X = self.screenWidth / 10
         self.TEXT_MARGIN_Y = self.screenHeight / 10
 
-        self.TEXT_BOX_WIDTH = (self.maxNameLength / 2 + self.maxNameLength / 5) * self.nickFontSize
+        self.TEXT_BOX_WIDTH = (LobbyPlayer.MAX_NAME_LENGTH / 2 + LobbyPlayer.MAX_NAME_LENGTH / 5) * self.nickFontSize
         self.TEXT_BOX_HEIGHT = self.nickFontSize
 
         self.TEXT_BOX_Y_POS = self.halfHeight * (int((which_player - 1) / 2)) + self.TEXT_MARGIN_Y * abs(
@@ -102,16 +102,14 @@ class LobbyPlayer:
         self.colorPicker = ColorPicker(round(self.COLOR_PICKER_X_POS), round(self.COLOR_PICKER_Y_POS),
                                        round(self.COLOR_PICKER_WIDTH), round(self.COLOR_PICKER_HEIGHT))
 
-        self.defaultLeft = 'a'
-        self.defaultRight = 'd'
-
-        self.initialLeft = self.defaultLeft
-        self.initialRight = self.defaultRight
+        self.initialLeft = LobbyPlayer.DEFAULT_LEFT
+        self.initialRight = LobbyPlayer.DEFAULT_RIGHT
 
         self.left = self.initialLeft
         self.right = self.initialRight
 
-        self.LEFT_BOX_WIDTH = (self.maxNameLength / 2 + self.maxNameLength / 5) * self.nickFontSize / 4
+        self.LEFT_BOX_WIDTH = ((LobbyPlayer.MAX_NAME_LENGTH / 2 + LobbyPlayer.MAX_NAME_LENGTH / 5) *
+                               self.nickFontSize / 4)
         self.LEFT_BOX_HEIGHT = self.nickFontSize
 
         self.LEFT_BOX_X_POS = self.COLOR_PICKER_X_POS
@@ -138,7 +136,8 @@ class LobbyPlayer:
                                                                self.COLOR_PICKER_HEIGHT -
                                                                self.LEFT_TEXT_HEIGHT / 4) / 2))
 
-        self.RIGHT_BOX_WIDTH = (self.maxNameLength / 2 + self.maxNameLength / 5) * self.nickFontSize / 4
+        self.RIGHT_BOX_WIDTH = ((LobbyPlayer.MAX_NAME_LENGTH / 2 + LobbyPlayer.MAX_NAME_LENGTH / 5) *
+                                self.nickFontSize / 4)
         self.RIGHT_BOX_HEIGHT = self.nickFontSize
 
         self.RIGHT_BOX_X_POS = self.COLOR_PICKER_X_POS + self.COLOR_PICKER_WIDTH - self.RIGHT_BOX_WIDTH
@@ -159,9 +158,11 @@ class LobbyPlayer:
         self.RIGHT_TEXT_RECT = self.RIGHT_TEXT.get_rect(center=(self.RIGHT_BOX_X_POS + self.RIGHT_BOX_WIDTH / 2,
                                                                 self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT +
                                                                 (self.RIGHT_BOX_Y_POS - self.COLOR_PICKER_Y_POS -
-                                                                 self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4) / 2))
+                                                                 self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4)
+                                                                / 2))
 
-        self.SPEED_BOX_WIDTH = (self.maxNameLength / 2 + self.maxNameLength / 5) * self.nickFontSize / 4
+        self.SPEED_BOX_WIDTH = ((LobbyPlayer.MAX_NAME_LENGTH / 2 + LobbyPlayer.MAX_NAME_LENGTH / 5) *
+                                self.nickFontSize / 4)
         self.SPEED_BOX_HEIGHT = self.nickFontSize
 
         self.SPEED_BOX_X_POS = (self.LEFT_BOX_X_POS + self.RIGHT_BOX_X_POS +
@@ -176,7 +177,7 @@ class LobbyPlayer:
                                  self.SPEED_BOX_HEIGHT,
                                  self.SPEED_RECT_COLOR, self.SPEED_RECT_COLOR_PICKED,
                                  self.Font.get_normal_font(smaller=3.0 / math.sqrt(self.sumProportion)),
-                                 self.initialSpeed, BoxId.SPEED_BOX.value)
+                                 LobbyPlayer.INITIAL_SPEED, BoxId.SPEED_BOX.value)
 
         self.SPEED_TEXT_WIDTH, self.SPEED_TEXT_HEIGHT = self.Font.get_normal_font(
             smaller=3.0 / math.sqrt(self.sumProportion)).size("Speed")
@@ -187,7 +188,8 @@ class LobbyPlayer:
         self.SPEED_TEXT_RECT = self.SPEED_TEXT.get_rect(center=(self.SPEED_BOX_X_POS + self.SPEED_BOX_WIDTH / 2,
                                                                 self.COLOR_PICKER_Y_POS + self.COLOR_PICKER_HEIGHT +
                                                                 (self.RIGHT_BOX_Y_POS - self.COLOR_PICKER_Y_POS -
-                                                                 self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4) / 2))
+                                                                 self.COLOR_PICKER_HEIGHT - self.RIGHT_TEXT_HEIGHT / 4)
+                                                                / 2))
 
         self.TEXT_BOXES = [self.NAME_BOX, self.LEFT_BOX, self.RIGHT_BOX, self.SPEED_BOX]
 
@@ -265,7 +267,8 @@ class LobbyPlayer:
 
                         if self.whichPicked == TEXT_BOX.text_id:
 
-                            if TEXT_BOX.text_id == BoxId.NAME_BOX.value and len(TEXT_BOX.text) < self.maxNameLength:
+                            if (TEXT_BOX.text_id == BoxId.NAME_BOX.value and
+                                    len(TEXT_BOX.text) < LobbyPlayer.MAX_NAME_LENGTH):
                                 TEXT_BOX.add_to_text(character_pressed.upper())
 
                             if ((TEXT_BOX.text_id == BoxId.LEFT_BOX.value and self.RIGHT_BOX.text
@@ -276,7 +279,7 @@ class LobbyPlayer:
                                 TEXT_BOX.set_text(character_pressed.lower())
 
                             if TEXT_BOX.text_id == BoxId.SPEED_BOX.value and len(
-                                    TEXT_BOX.text) < self.MAX_PRECISION and character_pressed.isnumeric():
+                                    TEXT_BOX.text) < LobbyPlayer.MAX_PRECISION and character_pressed.isnumeric():
 
                                 if TEXT_BOX.text[0] != '.':
                                     TEXT_BOX.add_to_text(character_pressed)

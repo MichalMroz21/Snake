@@ -3,6 +3,7 @@ import pygame
 import sys
 import time
 import operator
+from GameElements.Mixer import Mixer
 
 
 class Game:
@@ -136,7 +137,7 @@ class Game:
 
         pygame.display.update()
 
-        self.game_mixer.play_sound_effect(self.game_mixer.SoundBoard.gameWin)
+        self.game_mixer.play_sound_effect(Mixer.SoundBoard.gameWin)
 
         time.sleep(Game.WINNER_DISPLAY_TIME)
 
