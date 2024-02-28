@@ -34,6 +34,12 @@ class Round:
                                            Round.GAME_BACKGROUND_COLOR, self.screen, self.FPS, player.speed,
                                            player.thickness, player.name, player.whichPlayer))
 
+        self.players_alive = 0
+
+        for player in self.players:
+            if player.isAlive:
+                self.players_alive += 1
+
         self.fillBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)]
         self.colorBoard = [[0 for x in range(self.screenWidth)] for y in range(self.screenHeight)]
 
@@ -100,24 +106,27 @@ class Round:
                                                                                      self.screenHeight, self.fillBoard,
                                                                                      self.colorBoard,
                                                                                      self.animateThreads,
-                                                                                     self.gameMixer, self.deathOrder)))
+                                                                                     self.gameMixer, self.deathOrder,
+                                                                                     self.players_alive,
+                                                                                     self.MINIMUM_ALIVE_PLAYERS)))
 
                 move_threads[-1].start()
 
             for moveThread in move_threads:
                 moveThread.join()
 
-            players_alive = 0
+            self.players_alive = 0
 
             for player in self.players:
                 if player.isAlive:
-                    players_alive += 1
+                    self.players_alive += 1
 
-            if players_alive < self.MINIMUM_ALIVE_PLAYERS:
+            if self.players_alive < self.MINIMUM_ALIVE_PLAYERS:
                 all_animation_dead = True
 
                 for animateThread in self.animateThreads:
-                    if animateThread.is_alive(): all_animation_dead = False
+                    if animateThread.is_alive():
+                        all_animation_dead = False
 
                 if all_animation_dead:
                     return self.deathOrder

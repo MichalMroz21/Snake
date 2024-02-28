@@ -81,13 +81,13 @@ class LobbyPlayer:
                                 self.TEXT_RECT_COLOR, self.TEXT_RECT_COLOR_PICKED, self.nickFont, self.name,
                                 BoxId.NAME_BOX.value)
 
-        self.SNAKE_RECT_HEIGHT_MULTIPLIER = 5
+        self.SNAKE_RECT_HEIGHT_MULTIPLIER = 25
 
-        self.SNAKE_RECT_Y_MARGIN = self.maxThickness * self.SNAKE_RECT_HEIGHT_MULTIPLIER
+        self.SNAKE_RECT_Y_MARGIN = self.SNAKE_RECT_HEIGHT_MULTIPLIER
 
         self.SNAKE_X_POS = self.TEXT_BOX_X_POS
         self.SNAKE_Y_POS = self.TEXT_BOX_Y_POS + self.TEXT_BOX_HEIGHT + self.SNAKE_RECT_Y_MARGIN
-        self.SNAKE_HEIGHT = self.thickness * self.SNAKE_RECT_HEIGHT_MULTIPLIER
+        self.SNAKE_HEIGHT = self.SNAKE_RECT_HEIGHT_MULTIPLIER
         self.SNAKE_WIDTH = self.TEXT_BOX_WIDTH
 
         self.SNAKE_RECT = pygame.Rect(self.SNAKE_X_POS, self.SNAKE_Y_POS, self.SNAKE_WIDTH, self.SNAKE_HEIGHT)

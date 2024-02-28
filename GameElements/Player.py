@@ -1,6 +1,7 @@
 import random as rand
 import math
 import pygame
+import time
 
 from threading import Thread
 from collections import deque
@@ -59,6 +60,9 @@ class Player:
         self.previousHeadPositionsMap = [[0 for x in range(screen_width)] for y in range(screen_height)]
         self.previousHeadPositions = deque()
 
+        self.movement_animation_time_track = time.time()
+        #Delay in milliseconds to animate 1 particle of movement
+        self.movement_animation_delay = 100
         self.animator = PlayerAnimator(self)
 
     def update_previous_head_positions_max_size(self):
@@ -125,6 +129,9 @@ class Player:
         mixer.play_sound_effect(mixer.SoundBoard.death)
         self.animator.animate_death(board_fill, color_board, 10, 15)
 
+    def movement_animation(self, board_fill, color_board):
+        self.animator.animate_movement(board_fill, color_board)
+
     @staticmethod
     def check_if_point_is_in_area(po_round, square_po_round):
 
@@ -164,7 +171,7 @@ class Player:
         self.previousHeadPositions.append(temp_head_positions)
 
     def move_player_onscreen(self, screen, screen_width, screen_height, board_fill,
-                             color_board, animate_thread, mixer, death_order):
+                             color_board, animate_threads, mixer, death_order, players_alive, minimum_alive_players):
 
         if self.isAlive:
 
@@ -172,6 +179,15 @@ class Player:
             new_position_head = self.calc_new_head_position()
 
             self.update_position(new_position[0], new_position[1])
+
+            if ((time.time() - self.movement_animation_time_track) * 1000 >= self.movement_animation_delay
+                    and players_alive >= minimum_alive_players):
+
+                self.movement_animation_time_track = time.time()
+                movement_thread = Thread(target=self.movement_animation, args=(board_fill, color_board))
+                animate_threads.append(movement_thread)
+                movement_thread.start()
+
             self.update_pause()
 
             if self.add_to_previous_position(new_position_head[0], new_position_head[1], self.alpha):
@@ -227,7 +243,7 @@ class Player:
                         self.isAlive = False
                         death_order.append(self.id)
                         death_thread = Thread(target=self.death, args=(board_fill, color_board, mixer))
-                        animate_thread.append(death_thread)
+                        animate_threads.append(death_thread)
                         death_thread.start()
 
                         return
