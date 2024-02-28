@@ -3,7 +3,7 @@ import random
 import enum
 
 
-BASE_FOLDER = "assets"
+BASE_FOLDER = "Assets"
 
 FONT_FOLDER = "font"
 MUSIC_FOLDER = "music"
